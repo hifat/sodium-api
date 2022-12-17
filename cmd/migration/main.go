@@ -8,11 +8,7 @@ import (
 )
 
 func main() {
-	db, err := database.PostgresDB()
-	if err != nil {
-		panic(err)
-	}
-
+	db := database.PostgresDB()
 	GormMigrate(db)
 }
 

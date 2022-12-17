@@ -8,7 +8,7 @@ import (
 	"gorm.io/gorm"
 )
 
-func PostgresDB() (db *gorm.DB, err error) {
+func PostgresDB() (db *gorm.DB) {
 	dns := fmt.Sprintf("host=%s user=%s password=%s dbname=%s port=%s sslmode=disable",
 		os.Getenv("DB_HOST"),
 		os.Getenv("DB_USER"),
@@ -17,5 +17,10 @@ func PostgresDB() (db *gorm.DB, err error) {
 		os.Getenv("DB_PORT"),
 	)
 
-	return gorm.Open(postgres.Open(dns), &gorm.Config{})
+	db, err := gorm.Open(postgres.Open(dns), &gorm.Config{})
+	if err != nil {
+		panic(err)
+	}
+
+	return db
 }

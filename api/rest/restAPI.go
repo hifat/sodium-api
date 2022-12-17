@@ -2,20 +2,17 @@ package rest
 
 import (
 	"fmt"
-	"net/http"
 	"os"
 
 	"github.com/gin-gonic/gin"
+	"github.com/hifat/hifat-blog-api/internal/routes"
 )
 
 func API() {
 	router := gin.Default()
+	api := router.Group("/api")
 
-	router.GET("/hello", func(ctx *gin.Context) {
-		ctx.JSON(http.StatusOK, gin.H{
-			"message": "world",
-		})
-	})
+	routes.AuthRoute(api)
 
 	router.Run(fmt.Sprintf("%s:%s",
 		os.Getenv("APP_HOST"),

@@ -5,7 +5,6 @@ import (
 
 	"github.com/gin-gonic/gin"
 	"github.com/hifat/hifat-blog-api/api/rest"
-	"github.com/hifat/hifat-blog-api/internal/database"
 	_ "github.com/joho/godotenv/autoload"
 )
 
@@ -16,11 +15,5 @@ func init() {
 }
 
 func main() {
-	db, err := database.PostgresDB()
-	if err != nil {
-		panic(err)
-	}
-	_ = db
-
 	rest.API()
 }
