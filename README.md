@@ -1,4 +1,6 @@
-### Command
+# Hifat Blog API
+
+## Command
 Use [Makefile](https://makefiletutorial.com/)
 - Migrate database
 ```bash
