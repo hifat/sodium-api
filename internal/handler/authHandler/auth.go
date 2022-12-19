@@ -8,10 +8,10 @@ import (
 )
 
 type authHandler struct {
-	authService domain.AuthRepository
+	authService domain.AuthService
 }
 
-func NewAuthHandler(authService domain.AuthRepository) *authHandler {
+func NewAuthHandler(authService domain.AuthService) *authHandler {
 	return &authHandler{authService}
 }
 
@@ -26,10 +26,17 @@ func (h authHandler) Register(ctx *gin.Context) {
 		return
 	}
 
-	res, err := h.authService.Register(req)
+	res, err, validateErors := h.authService.Register(req)
+	if len(validateErors) > 0 {
+		ctx.AbortWithStatusJSON(http.StatusBadRequest, gin.H{
+			"errors": validateErors,
+		})
+		return
+	}
+
 	if err != nil {
 		ctx.AbortWithStatusJSON(http.StatusInternalServerError, gin.H{
-			"error": err.Error(),
+			"error": err,
 		})
 		return
 	}

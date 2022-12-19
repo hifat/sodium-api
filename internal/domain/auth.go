@@ -4,6 +4,7 @@ import (
 	"time"
 
 	"github.com/google/uuid"
+	"github.com/hifat/hifat-blog-api/internal/utils"
 )
 
 /* -------------------------------------------------------------------------- */
@@ -15,7 +16,7 @@ type AuthRepository interface {
 }
 
 type AuthService interface {
-	Register(req FormRegister) (res *ResponseRegister, err error)
+	Register(req FormRegister) (res *ResponseRegister, err error, validateErors utils.ValidatorType)
 }
 
 /* -------------------------------------------------------------------------- */
@@ -23,9 +24,9 @@ type AuthService interface {
 /* -------------------------------------------------------------------------- */
 
 type FormRegister struct {
-	Username string `binding:"required,max=100" json:"username"`
-	Password string `binding:"required,min=8,max=100" json:"password"`
-	Name     string `binding:"required,max=100" json:"name"`
+	Username string `validate:"required,max=100" json:"username"`
+	Password string `validate:"required,min=8,max=100" json:"password"`
+	Name     string `validate:"required,max=100" json:"name"`
 }
 
 type ResponseRegister struct {
