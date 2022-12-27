@@ -8,7 +8,7 @@ import (
 	"github.com/go-playground/validator"
 )
 
-type ValidatorType []map[string]interface{}
+type ValidatorType map[string]interface{}
 
 var validate *validator.Validate
 
@@ -27,15 +27,15 @@ func Validator(form interface{}) (fields ValidatorType, err error) {
 	if err != nil {
 		// Check error is actually from validator
 		if _, ok := err.(*validator.InvalidValidationError); !ok {
+			fields = make(ValidatorType)
+
 			for _, err := range err.(validator.ValidationErrors) {
 				fmt.Println("1" + err.ActualTag())
 				// err.Param() <--- value of options such as max=10 will return 10
 				fieldName := err.Field()
-				fields = append(fields, map[string]interface{}{
-					fieldName: err.ActualTag(),
-				})
+				fields[fieldName] = err.ActualTag()
 			}
-			fmt.Printf("%v", fields)
+
 			return fields, err.(validator.ValidationErrors)
 		}
 
