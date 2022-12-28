@@ -1,11 +1,11 @@
 package utils
 
 import (
-	"fmt"
 	"reflect"
 	"strings"
 
 	"github.com/go-playground/validator"
+	"github.com/hifat/hifat-blog-api/internal/resource/rscLang/rscLangEN"
 )
 
 type ValidatorType map[string]interface{}
@@ -30,10 +30,13 @@ func Validator(form interface{}) (fields ValidatorType, err error) {
 			fields = make(ValidatorType)
 
 			for _, err := range err.(validator.ValidationErrors) {
-				fmt.Println("1" + err.ActualTag())
-				// err.Param() <--- value of options such as max=10 will return 10
+				msg := rscLangEN.Validation[err.ActualTag()]
+				if msg == nil {
+					msg = "verification failed"
+				}
+
 				fieldName := err.Field()
-				fields[fieldName] = err.ActualTag()
+				fields[fieldName] = msg
 			}
 
 			return fields, err.(validator.ValidationErrors)
