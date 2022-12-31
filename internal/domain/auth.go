@@ -16,7 +16,7 @@ type AuthRepository interface {
 }
 
 type AuthService interface {
-	Register(req FormRegister) (res *ResponseRegister, err error, validateErors utils.ValidatorType)
+	Register(req FormRegister) (res *ResponseRegister, validateErors utils.ValidatorType, err error)
 }
 
 /* -------------------------------------------------------------------------- */

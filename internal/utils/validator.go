@@ -15,6 +15,7 @@ var validate *validator.Validate
 func Validator(form interface{}) (fields ValidatorType, err error) {
 	validate = validator.New()
 	validate.RegisterTagNameFunc(func(fld reflect.StructField) string {
+		// Get value from json tag
 		name := strings.SplitN(fld.Tag.Get("json"), ",", 2)[0]
 		if name == "-" {
 			return ""

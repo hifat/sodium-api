@@ -25,7 +25,7 @@ func (h authHandler) Register(ctx *gin.Context) {
 		return
 	}
 
-	res, err, validateErors := h.authService.Register(req)
+	res, validateErors, err := h.authService.Register(req)
 	if len(validateErors) > 0 {
 		ctx.AbortWithStatusJSON(http.StatusBadRequest, gin.H{
 			"errors": validateErors,
