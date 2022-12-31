@@ -5,6 +5,7 @@ import (
 
 	"github.com/gin-gonic/gin"
 	"github.com/hifat/hifat-blog-api/internal/domain"
+	"github.com/hifat/hifat-blog-api/internal/utils"
 )
 
 type authHandler struct {
@@ -17,15 +18,15 @@ func NewAuthHandler(authService domain.AuthService) *authHandler {
 
 func (h authHandler) Register(ctx *gin.Context) {
 	var req domain.PayloadUser
-	err := ctx.ShouldBind(&req)
+	ctx.ShouldBind(&req)
+	validateErors, err := utils.Validator(req)
 	if err != nil {
 		ctx.AbortWithStatusJSON(http.StatusBadRequest, gin.H{
-			"error": err.Error(),
+			"error": validateErors,
 		})
 		return
 	}
 
-	res, validateErors, err := h.authService.Register(req)
 	if len(validateErors) > 0 {
 		ctx.AbortWithStatusJSON(http.StatusBadRequest, gin.H{
 			"errors": validateErors,
@@ -33,6 +34,7 @@ func (h authHandler) Register(ctx *gin.Context) {
 		return
 	}
 
+	res, err := h.authService.Register(req)
 	if err != nil {
 		ctx.AbortWithStatusJSON(http.StatusInternalServerError, gin.H{
 			"error": err,

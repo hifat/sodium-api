@@ -13,18 +13,13 @@ func NewAuthService(userRepo domain.UserRepository) domain.AuthService {
 	return &authService{userRepo}
 }
 
-func (u authService) Register(req domain.PayloadUser) (res *domain.ResponseUser, validateErors utils.ValidatorType, err error) {
-	validateErors, err = utils.Validator(req)
-	if err != nil || len(validateErors) > 0 {
-		return nil, validateErors, err
-	}
-
+func (u authService) Register(req domain.PayloadUser) (res *domain.ResponseUser, err error) {
 	req.Password, err = utils.HashPassword(req.Password)
 	if err != nil {
-		return nil, nil, err
+		return nil, err
 	}
 
 	res, err = u.userRepo.Create(req)
 
-	return res, validateErors, err
+	return res, err
 }
