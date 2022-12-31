@@ -1,4 +1,4 @@
-package authRepo
+package userRepo
 
 import (
 	"github.com/hifat/hifat-blog-api/internal/domain"
@@ -6,15 +6,15 @@ import (
 	"gorm.io/gorm"
 )
 
-type authRepository struct {
+type userRepository struct {
 	db *gorm.DB
 }
 
-func NewAuthRepository(db *gorm.DB) domain.AuthRepository {
-	return &authRepository{db}
+func NewUserRepository(db *gorm.DB) domain.UserRepository {
+	return &userRepository{db}
 }
 
-func (r authRepository) Register(req domain.FormRegister) (res *domain.ResponseRegister, err error) {
+func (r userRepository) Create(req domain.PayloadUser) (res *domain.ResponseUser, err error) {
 	newUser := gormModel.User{
 		Username: req.Username,
 		Password: req.Password,

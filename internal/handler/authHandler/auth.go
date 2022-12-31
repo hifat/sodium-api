@@ -16,7 +16,7 @@ func NewAuthHandler(authService domain.AuthService) *authHandler {
 }
 
 func (h authHandler) Register(ctx *gin.Context) {
-	var req domain.FormRegister
+	var req domain.PayloadUser
 	err := ctx.ShouldBind(&req)
 	if err != nil {
 		ctx.AbortWithStatusJSON(http.StatusBadRequest, gin.H{

@@ -6,14 +6,14 @@ import (
 )
 
 type authService struct {
-	authRepo domain.AuthRepository
+	userRepo domain.UserRepository
 }
 
-func NewAuthService(authRepo domain.AuthRepository) domain.AuthService {
-	return &authService{authRepo}
+func NewAuthService(userRepo domain.UserRepository) domain.AuthService {
+	return &authService{userRepo}
 }
 
-func (u authService) Register(req domain.FormRegister) (res *domain.ResponseRegister, validateErors utils.ValidatorType, err error) {
+func (u authService) Register(req domain.PayloadUser) (res *domain.ResponseUser, validateErors utils.ValidatorType, err error) {
 	validateErors, err = utils.Validator(req)
 	if err != nil || len(validateErors) > 0 {
 		return nil, validateErors, err
@@ -24,7 +24,7 @@ func (u authService) Register(req domain.FormRegister) (res *domain.ResponseRegi
 		return nil, nil, err
 	}
 
-	res, err = u.authRepo.Register(req)
+	res, err = u.userRepo.Create(req)
 
 	return res, validateErors, err
 }
