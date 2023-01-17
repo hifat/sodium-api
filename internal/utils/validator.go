@@ -1,6 +1,7 @@
 package utils
 
 import (
+	"fmt"
 	"reflect"
 	"strings"
 
@@ -37,6 +38,7 @@ func Validator(form interface{}) (fields ValidatorType, err error) {
 				}
 
 				fieldName := err.Field()
+				msg = strings.Replace(fmt.Sprintf("%v", msg), ":attribute", fieldName, -1)
 				fields[fieldName] = msg
 			}
 
