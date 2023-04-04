@@ -10,3 +10,9 @@ make migrate
 ```bash
 make run
 ```
+
+# Feature
+
+- [x] Auth
+- [ ] Pretty validate form message
+- [ ] Rate limit
