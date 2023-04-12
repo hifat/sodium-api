@@ -18,18 +18,10 @@ func NewAuthHandler(authService domain.AuthService) *authHandler {
 
 func (h authHandler) Register(ctx *gin.Context) {
 	var req domain.PayloadUser
-	ctx.ShouldBind(&req)
-	validateErors, err := utils.Validator(req)
+	err := ctx.ShouldBind(&req)
 	if err != nil {
 		ctx.AbortWithStatusJSON(http.StatusBadRequest, gin.H{
-			"error": validateErors,
-		})
-		return
-	}
-
-	if len(validateErors) > 0 {
-		ctx.AbortWithStatusJSON(http.StatusBadRequest, gin.H{
-			"errors": validateErors,
+			"error": utils.Validator(err),
 		})
 		return
 	}
