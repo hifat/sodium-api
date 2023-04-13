@@ -16,3 +16,7 @@ make run
 - [x] Auth
 - [ ] Pretty validate form message
 - [ ] Rate limit
+
+# Issue
+
+- [ ] Error validate message not show index when use `dive`

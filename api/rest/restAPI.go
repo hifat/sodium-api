@@ -7,6 +7,7 @@ import (
 	"strings"
 
 	"github.com/gin-gonic/gin"
+	"github.com/hifat/hifat-blog-api/internal/resource/langEN"
 	"github.com/hifat/hifat-blog-api/internal/routes"
 	"github.com/hifat/hifat-blog-api/internal/utils"
 
@@ -27,7 +28,12 @@ func API() {
 		if name == "-" {
 			return ""
 		}
-		return name
+
+		if _, ok := langEN.Validate[name]; !ok {
+			return name
+		}
+
+		return langEN.Validate[name]
 	})
 
 	if v, ok := binding.Validator.Engine().(*validator.Validate); ok {

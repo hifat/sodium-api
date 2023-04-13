@@ -1,16 +1,17 @@
 package authHandler
 
 import (
-	"net/http"
-
 	"github.com/gin-gonic/gin"
 	"github.com/hifat/hifat-blog-api/internal/domain"
 	"github.com/hifat/hifat-blog-api/internal/utils"
+	"github.com/hifat/hifat-blog-api/internal/utils/response"
 )
 
 type authHandler struct {
 	authService domain.AuthService
 }
+
+var validator utils.Validator
 
 func NewAuthHandler(authService domain.AuthService) *authHandler {
 	return &authHandler{authService}
@@ -20,21 +21,17 @@ func (h authHandler) Register(ctx *gin.Context) {
 	var req domain.PayloadUser
 	err := ctx.ShouldBind(&req)
 	if err != nil {
-		ctx.AbortWithStatusJSON(http.StatusBadRequest, gin.H{
-			"error": utils.Validator(err),
-		})
+		response.FormErr(ctx, validator.Validate(err))
 		return
 	}
 
 	res, err := h.authService.Register(req)
 	if err != nil {
-		ctx.AbortWithStatusJSON(http.StatusInternalServerError, gin.H{
-			"error": err,
-		})
+		response.InternalError(ctx, err)
 		return
 	}
 
-	ctx.JSON(http.StatusOK, gin.H{
-		"user": res,
+	response.Created(ctx, response.SuccesResponse{
+		Item: res,
 	})
 }

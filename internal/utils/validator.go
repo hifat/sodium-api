@@ -1,60 +1,44 @@
 package utils
 
 import (
+	"encoding/json"
+	"log"
+	"os"
+
 	ut "github.com/go-playground/universal-translator"
 	"github.com/go-playground/validator/v10"
 )
 
 var Trans ut.Translator
 
-type ValidatorType map[string]interface{}
+type Validator struct{}
 
-var validate *validator.Validate
-
-func Validator(err error) validator.ValidationErrorsTranslations {
+func (Validator) Validate(err error) validator.ValidationErrorsTranslations {
 	if _, ok := err.(validator.ValidationErrors); !ok {
+		log.Println(err.Error())
 		return map[string]string{
 			"message": "unable to validate",
 		}
 	}
 
-	return err.(validator.ValidationErrors).Translate(Trans)
+	objErr := make(map[string]string)
+	for _, e := range err.(validator.ValidationErrors) {
+		objErr[e.StructField()] = e.Translate(Trans)
+	}
+
+	if os.Getenv("APP_MODE") == "production" {
+		jsonBytes, err := json.MarshalIndent(objErr, "", "  ")
+		if err != nil {
+			return map[string]string{
+				"message": "validator error marshalling to JSON",
+			}
+		}
+
+		log.Println(string(jsonBytes))
+		return map[string]string{
+			"message": "bad request",
+		}
+	}
+
+	return objErr
 }
-
-// func Validator(form interface{}) (fields ValidatorType, err error) {
-// 	validate = validator.New()
-// 	validate.RegisterTagNameFunc(func(fld reflect.StructField) string {
-// 		// Get value from json tag
-// 		name := strings.SplitN(fld.Tag.Get("json"), ",", 2)[0]
-// 		if name == "-" {
-// 			return ""
-// 		}
-
-// 		return name
-// 	})
-
-// 	err = validate.Struct(form)
-// 	if err != nil {
-// 		// Check error is actually from validator
-// 		if _, ok := err.(*validator.InvalidValidationError); !ok {
-// 			fields = make(ValidatorType)
-
-// 			for _, err := range err.(validator.ValidationErrors) {
-// 				msg := rscLangEN.Validation[err.ActualTag()]
-// 				if msg == nil {
-// 					msg = "verification failed"
-// 				}
-
-// 				fieldName := err.Field()
-// 				msg = strings.Replace(fmt.Sprintf("%v", msg), ":attribute", fieldName, -1)
-// 				fields[fieldName] = msg
-// 			}
-
-// 			return fields, err.(validator.ValidationErrors)
-// 		}
-
-// 		return nil, err
-// 	}
-
-// 	return nil, nil
-// }
