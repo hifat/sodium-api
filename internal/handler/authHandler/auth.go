@@ -18,7 +18,7 @@ func NewAuthHandler(authService domain.AuthService) *authHandler {
 }
 
 func (h authHandler) Register(ctx *gin.Context) {
-	var req domain.PayloadUser
+	var req domain.RequestRegister
 	err := ctx.ShouldBind(&req)
 	if err != nil {
 		response.FormErr(ctx, validator.Validate(err))

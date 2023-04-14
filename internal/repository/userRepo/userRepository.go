@@ -14,7 +14,7 @@ func NewUserRepository(db *gorm.DB) domain.UserRepository {
 	return &userRepository{db}
 }
 
-func (r userRepository) Create(req domain.PayloadUser) (res *domain.ResponseUser, err error) {
+func (r userRepository) Register(req domain.RequestRegister) (res *domain.ResponseRegister, err error) {
 	newUser := gormModel.User{
 		Username: req.Username,
 		Password: req.Password,
