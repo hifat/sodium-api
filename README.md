@@ -11,6 +11,11 @@ make migrate
 make run
 ```
 
+- Swag init
+```bash
+make swag
+```
+
 # Feature
 
 - [x] Auth
@@ -18,7 +23,7 @@ make run
 - [ ] Rate limit
 - [ ] RBCA
 
-# Issue
+# Issues
 
 - [ ] Error validate message not show index when use `dive`
 - [ ] Change key name to json tag when validation error
