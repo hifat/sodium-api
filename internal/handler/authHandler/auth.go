@@ -3,25 +3,33 @@ package authHandler
 import (
 	"github.com/gin-gonic/gin"
 	"github.com/hifat/hifat-blog-api/internal/domain"
-	"github.com/hifat/hifat-blog-api/internal/utils"
 	"github.com/hifat/hifat-blog-api/internal/utils/response"
+	"github.com/hifat/hifat-blog-api/internal/utils/validity"
 )
 
 type authHandler struct {
 	authService domain.AuthService
 }
 
-var validator utils.Validator
-
 func NewAuthHandler(authService domain.AuthService) *authHandler {
 	return &authHandler{authService}
 }
 
+// @Summary 	Register
+// @Description Register
+// @Tags 		Auth
+// @Accept 		json
+// @Produce 	json
+// @Success 	200 {object} domain.ResponseRegister
+// @Success 	422 {object} response.ErrorResponse "Unprocessable Entity"
+// @Success 	500 {object} response.ErrorResponse "Internal server error"
+// @Router 		/auth/register [post]
+// @Param 		Body body domain.RequestRegister true "Register request"
 func (h authHandler) Register(ctx *gin.Context) {
 	var req domain.RequestRegister
 	err := ctx.ShouldBind(&req)
 	if err != nil {
-		response.FormErr(ctx, validator.Validate(err))
+		response.FormErr(ctx, validity.Validate(err))
 		return
 	}
 
