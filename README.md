@@ -14,10 +14,11 @@ make run
 # Feature
 
 - [x] Auth
-- [ ] Pretty validate form message
+- [x] Pretty validate form message
 - [ ] Rate limit
 - [ ] RBCA
 
 # Issue
 
 - [ ] Error validate message not show index when use `dive`
+- [ ] Change key name to json tag when validation error
