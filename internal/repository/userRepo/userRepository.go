@@ -14,6 +14,20 @@ func NewUserRepository(db *gorm.DB) domain.UserRepository {
 	return &userRepository{db}
 }
 
+func (r userRepository) CheckExists(col, value string, exceptID *any) (exists bool, err error) {
+	tx := r.db.Model(&gormModel.User{}).
+		Select(`COUNT(*) > 0`).
+		Where("username = ?", value)
+
+	if exceptID != nil {
+		tx.Where("id = ?", exceptID)
+	}
+
+	err = tx.Find(&exists).Error
+
+	return exists, err
+}
+
 func (r userRepository) Register(req domain.RequestRegister) (res *domain.ResponseRegister, err error) {
 	newUser := gormModel.User{
 		Username: req.Username,

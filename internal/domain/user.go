@@ -1,6 +1,7 @@
 package domain
 
 type UserRepository interface {
+	CheckExists(col, value string, exceptID *any) (exists bool, err error)
 	Register(req RequestRegister) (res *ResponseRegister, err error)
 }
 

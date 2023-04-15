@@ -1,18 +1,12 @@
 package response
 
-import (
-	"log"
-	"net/http"
-
-	"github.com/gin-gonic/gin"
-)
-
 type ErrorResponse struct {
 	Error any `json:"error"`
 }
 
 type ErrorMessageResponse struct {
-	Message string `json:"message"`
+	Message string `json:"message,omitempty"`
+	Code    string `json:"code,omitempty"`
 }
 
 type SuccesResponse struct {
@@ -21,7 +15,7 @@ type SuccesResponse struct {
 	Total any `json:"total,omitempty"`
 }
 
-func handleErr(err any) ErrorResponse {
+func HandleErr(err any) ErrorResponse {
 	if _, ok := err.(error); ok {
 		return ErrorResponse{
 			Error: ErrorMessageResponse{
@@ -33,25 +27,4 @@ func handleErr(err any) ErrorResponse {
 	return ErrorResponse{
 		Error: err,
 	}
-}
-
-func FormErr(ctx *gin.Context, err any) {
-	ctx.AbortWithStatusJSON(http.StatusUnprocessableEntity, handleErr(err))
-}
-
-func InternalError(ctx *gin.Context, err any) {
-	log.Println(err.(error).Error())
-	ctx.AbortWithStatusJSON(http.StatusInternalServerError, ErrorResponse{
-		Error: ErrorMessageResponse{
-			Message: http.StatusText(http.StatusInternalServerError),
-		},
-	})
-}
-
-func Created(ctx *gin.Context, obj any) {
-	ctx.JSON(http.StatusCreated, obj)
-}
-
-func Success(ctx *gin.Context, obj any) {
-	ctx.JSON(http.StatusOK, obj)
 }
