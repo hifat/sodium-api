@@ -19,7 +19,7 @@ func API() {
 	validity.Register()
 
 	/* ------------------------------- Swag config ------------------------------ */
-	
+
 	// programmatically set swagger info
 	docs.SwaggerInfo.Title = "Sodium API"
 	docs.SwaggerInfo.Version = "1.0"

@@ -23,9 +23,18 @@ definitions:
       username:
         type: string
     type: object
+  response.ErrorMessageResponse:
+    properties:
+      attribute: {}
+      code:
+        type: string
+      message:
+        type: string
+    type: object
   response.ErrorResponse:
     properties:
-      error: {}
+      error:
+        $ref: '#/definitions/response.ErrorMessageResponse'
     type: object
 info:
   contact: {}
@@ -49,8 +58,12 @@ paths:
           description: OK
           schema:
             $ref: '#/definitions/domain.ResponseRegister'
+        "409":
+          description: Duplicate record
+          schema:
+            $ref: '#/definitions/response.ErrorResponse'
         "422":
-          description: Unprocessable Entity
+          description: Form validation error
           schema:
             $ref: '#/definitions/response.ErrorResponse'
         "500":

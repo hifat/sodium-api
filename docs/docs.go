@@ -47,8 +47,14 @@ const docTemplate = `{
                             "$ref": "#/definitions/domain.ResponseRegister"
                         }
                     },
+                    "409": {
+                        "description": "Duplicate record",
+                        "schema": {
+                            "$ref": "#/definitions/response.ErrorResponse"
+                        }
+                    },
                     "422": {
-                        "description": "Unprocessable Entity",
+                        "description": "Form validation error",
                         "schema": {
                             "$ref": "#/definitions/response.ErrorResponse"
                         }
@@ -98,10 +104,24 @@ const docTemplate = `{
                 }
             }
         },
+        "response.ErrorMessageResponse": {
+            "type": "object",
+            "properties": {
+                "attribute": {},
+                "code": {
+                    "type": "string"
+                },
+                "message": {
+                    "type": "string"
+                }
+            }
+        },
         "response.ErrorResponse": {
             "type": "object",
             "properties": {
-                "error": {}
+                "error": {
+                    "$ref": "#/definitions/response.ErrorMessageResponse"
+                }
             }
         }
     }

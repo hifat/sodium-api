@@ -17,16 +17,17 @@ func NewAuthHandler(authService domain.AuthService) *authHandler {
 	return &authHandler{authService}
 }
 
-// @Summary 	Register
+// @Summary		Register
 // @Description Register
-// @Tags 		Auth
-// @Accept 		json
-// @Produce 	json
-// @Success 	200 {object} domain.ResponseRegister
-// @Success 	422 {object} response.ErrorResponse "Unprocessable Entity"
-// @Success 	500 {object} response.ErrorResponse "Internal server error"
-// @Router 		/auth/register [post]
-// @Param 		Body body domain.RequestRegister true "Register request"
+// @Tags		Auth
+// @Accept		json
+// @Produce		json
+// @Success		200 {object} domain.ResponseRegister
+// @Success		409 {object} response.ErrorResponse "Duplicate record"
+// @Success		422 {object} response.ErrorResponse "Form validation error"
+// @Success		500 {object} response.ErrorResponse "Internal server error"
+// @Router		/auth/register [post]
+// @Param		Body body domain.RequestRegister true "Register request"
 func (h authHandler) Register(ctx *gin.Context) {
 	var req domain.RequestRegister
 	err := ctx.ShouldBind(&req)

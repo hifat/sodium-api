@@ -1,12 +1,13 @@
 package response
 
 type ErrorResponse struct {
-	Error any `json:"error"`
+	Error ErrorMessageResponse `json:"error"`
 }
 
 type ErrorMessageResponse struct {
-	Message string `json:"message,omitempty"`
-	Code    string `json:"code,omitempty"`
+	Message   string `json:"message,omitempty"`
+	Code      string `json:"code,omitempty"`
+	Attribute any    `json:"attribute,omitempty"`
 }
 
 type SuccesResponse struct {
@@ -25,6 +26,8 @@ func HandleErr(err any) ErrorResponse {
 	}
 
 	return ErrorResponse{
-		Error: err,
+		Error: ErrorMessageResponse{
+			Attribute: err,
+		},
 	}
 }
