@@ -1,9 +1,9 @@
 package authService
 
 import (
-	"github.com/hifat/hifat-blog-api/internal/domain"
-	"github.com/hifat/hifat-blog-api/internal/utils"
-	"github.com/hifat/hifat-blog-api/internal/utils/ernos"
+	"github.com/hifat/sodium-api/internal/domain"
+	"github.com/hifat/sodium-api/internal/utils"
+	"github.com/hifat/sodium-api/internal/utils/ernos"
 )
 
 type authService struct {

@@ -1,8 +1,8 @@
 package userRepo
 
 import (
-	"github.com/hifat/hifat-blog-api/internal/domain"
-	"github.com/hifat/hifat-blog-api/internal/model/gormModel"
+	"github.com/hifat/sodium-api/internal/domain"
+	"github.com/hifat/sodium-api/internal/model/gormModel"
 	"gorm.io/gorm"
 )
 

@@ -2,10 +2,10 @@ package routes
 
 import (
 	"github.com/gin-gonic/gin"
-	"github.com/hifat/hifat-blog-api/internal/database"
-	"github.com/hifat/hifat-blog-api/internal/handler/authHandler"
-	"github.com/hifat/hifat-blog-api/internal/repository/userRepo"
-	"github.com/hifat/hifat-blog-api/internal/service/authService"
+	"github.com/hifat/sodium-api/internal/database"
+	"github.com/hifat/sodium-api/internal/handler/authHandler"
+	"github.com/hifat/sodium-api/internal/repository/userRepo"
+	"github.com/hifat/sodium-api/internal/service/authService"
 )
 
 func AuthRoute(r *gin.RouterGroup) {

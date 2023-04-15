@@ -5,8 +5,8 @@ import (
 	"net/http"
 
 	"github.com/gin-gonic/gin"
-	"github.com/hifat/hifat-blog-api/internal/utils/ernos"
-	"github.com/hifat/hifat-blog-api/internal/utils/response"
+	"github.com/hifat/sodium-api/internal/utils/ernos"
+	"github.com/hifat/sodium-api/internal/utils/response"
 )
 
 func FormErr(ctx *gin.Context, err any) {

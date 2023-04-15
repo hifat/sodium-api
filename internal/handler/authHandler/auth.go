@@ -2,11 +2,11 @@ package authHandler
 
 import (
 	"github.com/gin-gonic/gin"
-	"github.com/hifat/hifat-blog-api/internal/domain"
-	"github.com/hifat/hifat-blog-api/internal/handler/httpResponse"
-	"github.com/hifat/hifat-blog-api/internal/utils/ernos"
-	"github.com/hifat/hifat-blog-api/internal/utils/response"
-	"github.com/hifat/hifat-blog-api/internal/utils/validity"
+	"github.com/hifat/sodium-api/internal/domain"
+	"github.com/hifat/sodium-api/internal/handler/httpResponse"
+	"github.com/hifat/sodium-api/internal/utils/ernos"
+	"github.com/hifat/sodium-api/internal/utils/response"
+	"github.com/hifat/sodium-api/internal/utils/validity"
 )
 
 type authHandler struct {

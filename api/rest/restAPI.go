@@ -5,9 +5,9 @@ import (
 	"os"
 
 	"github.com/gin-gonic/gin"
-	"github.com/hifat/hifat-blog-api/docs"
-	"github.com/hifat/hifat-blog-api/internal/routes"
-	"github.com/hifat/hifat-blog-api/internal/utils/validity"
+	"github.com/hifat/sodium-api/docs"
+	"github.com/hifat/sodium-api/internal/routes"
+	"github.com/hifat/sodium-api/internal/utils/validity"
 
 	swaggerFiles "github.com/swaggo/files"
 	ginSwagger "github.com/swaggo/gin-swagger"

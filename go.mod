@@ -1,4 +1,4 @@
-module github.com/hifat/hifat-blog-api
+module github.com/hifat/sodium-api
 
 go 1.19
 

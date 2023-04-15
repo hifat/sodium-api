@@ -1,8 +1,8 @@
 package main
 
 import (
-	"github.com/hifat/hifat-blog-api/internal/database"
-	"github.com/hifat/hifat-blog-api/internal/model/gormModel"
+	"github.com/hifat/sodium-api/internal/database"
+	"github.com/hifat/sodium-api/internal/model/gormModel"
 	_ "github.com/joho/godotenv/autoload"
 	"gorm.io/gorm"
 )
