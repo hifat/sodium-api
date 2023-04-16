@@ -1,6 +1,8 @@
 package authHandler
 
 import (
+	"fmt"
+
 	"github.com/gin-gonic/gin"
 	"github.com/hifat/sodium-api/internal/domain"
 	"github.com/hifat/sodium-api/internal/handler/httpResponse"
@@ -18,7 +20,6 @@ func NewAuthHandler(authService domain.AuthService) *authHandler {
 }
 
 // @Summary		Register
-// @Description Register
 // @Tags		Auth
 // @Accept		json
 // @Produce		json
@@ -29,6 +30,9 @@ func NewAuthHandler(authService domain.AuthService) *authHandler {
 // @Router		/auth/register [post]
 // @Param		Body body domain.RequestRegister true "Register request"
 func (h authHandler) Register(ctx *gin.Context) {
+	fmt.Println(ctx.Request.UserAgent())
+	fmt.Println(ctx.ClientIP())
+
 	var req domain.RequestRegister
 	err := ctx.ShouldBind(&req)
 	if err != nil {
@@ -36,7 +40,8 @@ func (h authHandler) Register(ctx *gin.Context) {
 		return
 	}
 
-	res, err := h.authService.Register(req)
+	var res domain.ResponseRegister
+	err = h.authService.Register(req, &res)
 	if err != nil {
 		if e, ok := err.(ernos.Ernos); ok {
 			if e.Code == ernos.C.DUPLICATE_RECORD {
@@ -50,6 +55,43 @@ func (h authHandler) Register(ctx *gin.Context) {
 	}
 
 	httpResponse.Created(ctx, response.SuccesResponse{
+		Item: res,
+	})
+}
+
+// @Summary		Login
+// @Tags		Auth
+// @Accept		json
+// @Produce		json
+// @Success		200 {object} domain.RequestLogin
+// @Success		401 {object} response.ErrorResponse "Username or password is incorect"
+// @Success		422 {object} response.ErrorResponse "Form validation error"
+// @Success		500 {object} response.ErrorResponse "Internal server error"
+// @Router		/auth/login [post]
+// @Param		Body body domain.ResponseLogin true "Register request"
+func (h authHandler) Login(ctx *gin.Context) {
+	var req domain.RequestLogin
+	err := ctx.ShouldBind(&req)
+	if err != nil {
+		httpResponse.FormErr(ctx, validity.Validate(err))
+		return
+	}
+
+	res := domain.ResponseLogin{}
+	err = h.authService.Login(req, &res)
+	if err != nil {
+		if e, ok := err.(ernos.Ernos); ok {
+			if e.Code == ernos.C.INVALID_CREDENTIALS {
+				httpResponse.Unauthorized(ctx, err)
+				return
+			}
+		}
+
+		httpResponse.InternalError(ctx, err)
+		return
+	}
+
+	httpResponse.Success(ctx, response.SuccesResponse{
 		Item: res,
 	})
 }
