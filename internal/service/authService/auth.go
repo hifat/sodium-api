@@ -2,28 +2,19 @@ package authService
 
 import (
 	"log"
+	"os"
 	"time"
 
 	"github.com/google/uuid"
+	"github.com/hifat/sodium-api/internal/constants"
 	"github.com/hifat/sodium-api/internal/domain"
 	"github.com/hifat/sodium-api/internal/utils"
 	"github.com/hifat/sodium-api/internal/utils/ernos"
 	"github.com/hifat/sodium-api/internal/utils/token"
 )
 
-var jwtToken token.JWT
-
 type authService struct {
 	authRepo domain.AuthRepository
-}
-
-func init() {
-	var err error
-	jwtToken, err = token.NewJWTToken("SECRETSECRETSECRETSECRETSECRETSECRETSECRETSECRET")
-	if err != nil {
-		log.Panic(err.Error())
-		return
-	}
 }
 
 func NewAuthService(authRepo domain.AuthRepository) domain.AuthService {
@@ -69,13 +60,15 @@ func (u authService) Login(req domain.RequestLogin, res *domain.ResponseLogin) (
 
 	expired := time.Now().AddDate(0, 0, 7)
 
-	accessToken, _, err := jwtToken.CreateToken(userPayload, time.Minute*15)
+	accessSecret := os.Getenv(constants.ACCESS_TOKEN_SECRET)
+	accessToken, _, err := token.CreateToken(accessSecret, userPayload, time.Minute*15)
 	if err != nil {
 		log.Println(err.Error())
 		return ernos.InternalServerError("")
 	}
 
-	refreshToken, _, err := jwtToken.CreateToken(userPayload, time.Until(expired))
+	refreshSecret := os.Getenv(constants.REFRESH_TOKEN_SECRET)
+	refreshToken, _, err := token.CreateToken(refreshSecret, userPayload, time.Until(expired))
 	if err != nil {
 		log.Println(err.Error())
 		return ernos.InternalServerError("")
