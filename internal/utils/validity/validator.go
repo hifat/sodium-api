@@ -9,7 +9,7 @@ import (
 	"strings"
 
 	"github.com/go-playground/validator/v10"
-	"github.com/hifat/hifat-blog-api/internal/resource/langEN"
+	"github.com/hifat/sodium-api/internal/resource/langEN"
 
 	"github.com/gin-gonic/gin/binding"
 	"github.com/go-playground/locales/en"

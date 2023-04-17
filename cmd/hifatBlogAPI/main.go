@@ -4,7 +4,7 @@ import (
 	"os"
 
 	"github.com/gin-gonic/gin"
-	"github.com/hifat/hifat-blog-api/api/rest"
+	"github.com/hifat/sodium-api/api/rest"
 	_ "github.com/joho/godotenv/autoload"
 )
 

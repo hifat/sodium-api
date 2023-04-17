@@ -5,9 +5,30 @@ import (
 	"net/http"
 
 	"github.com/gin-gonic/gin"
-	"github.com/hifat/hifat-blog-api/internal/utils/ernos"
-	"github.com/hifat/hifat-blog-api/internal/utils/response"
+	"github.com/hifat/sodium-api/internal/utils/ernos"
+	"github.com/hifat/sodium-api/internal/utils/response"
 )
+
+func handleError(ctx *gin.Context, httpCode int, err error) {
+	if _, ok := err.(ernos.Ernos); ok {
+		log.Println(err.(ernos.Ernos).Error())
+		ctx.AbortWithStatusJSON(http.StatusUnauthorized, response.ErrorResponse{
+			Error: response.ErrorMessageResponse{
+				Message: err.(ernos.Ernos).Message,
+				Code:    err.(ernos.Ernos).Code,
+			},
+		})
+		return
+	}
+
+	log.Println(err.Error())
+	ctx.AbortWithStatusJSON(http.StatusUnauthorized, response.ErrorResponse{
+		Error: response.ErrorMessageResponse{
+			Message: err.Error(),
+			Code:    "",
+		},
+	})
+}
 
 func FormErr(ctx *gin.Context, err any) {
 	ctx.AbortWithStatusJSON(http.StatusUnprocessableEntity, response.HandleErr(err))
@@ -30,12 +51,10 @@ func Success(ctx *gin.Context, obj any) {
 	ctx.JSON(http.StatusOK, obj)
 }
 
-func Conflict(ctx *gin.Context, err any) {
-	log.Println(err.(ernos.Ernos).Error())
-	ctx.AbortWithStatusJSON(http.StatusConflict, response.ErrorResponse{
-		Error: response.ErrorMessageResponse{
-			Message: err.(ernos.Ernos).Message,
-			Code:    err.(ernos.Ernos).Code,
-		},
-	})
+func Conflict(ctx *gin.Context, err error) {
+	handleError(ctx, http.StatusConflict, err)
+}
+
+func Unauthorized(ctx *gin.Context, err error) {
+	handleError(ctx, http.StatusUnauthorized, err)
 }
