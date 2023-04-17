@@ -6,7 +6,6 @@
     "paths": {
         "/auth/login": {
             "post": {
-                "description": "Register",
                 "consumes": [
                     "application/json"
                 ],
@@ -16,7 +15,7 @@
                 "tags": [
                     "Auth"
                 ],
-                "summary": "Register",
+                "summary": "Login",
                 "parameters": [
                     {
                         "description": "Register request",
@@ -24,7 +23,7 @@
                         "in": "body",
                         "required": true,
                         "schema": {
-                            "$ref": "#/definitions/domain.RequestRegister"
+                            "$ref": "#/definitions/domain.ResponseLogin"
                         }
                     }
                 ],
@@ -58,7 +57,6 @@
         },
         "/auth/register": {
             "post": {
-                "description": "Register",
                 "consumes": [
                     "application/json"
                 ],
@@ -147,6 +145,17 @@
                 "username": {
                     "type": "string",
                     "maxLength": 100
+                }
+            }
+        },
+        "domain.ResponseLogin": {
+            "type": "object",
+            "properties": {
+                "accessToken": {
+                    "type": "string"
+                },
+                "refreshToken": {
+                    "type": "string"
                 }
             }
         },

@@ -28,6 +28,13 @@ definitions:
     - password
     - username
     type: object
+  domain.ResponseLogin:
+    properties:
+      accessToken:
+        type: string
+      refreshToken:
+        type: string
+    type: object
   domain.ResponseRegister:
     properties:
       name:
@@ -55,14 +62,13 @@ paths:
     post:
       consumes:
       - application/json
-      description: Register
       parameters:
       - description: Register request
         in: body
         name: Body
         required: true
         schema:
-          $ref: '#/definitions/domain.RequestRegister'
+          $ref: '#/definitions/domain.ResponseLogin'
       produces:
       - application/json
       responses:
@@ -82,14 +88,13 @@ paths:
           description: Internal server error
           schema:
             $ref: '#/definitions/response.ErrorResponse'
-      summary: Register
+      summary: Login
       tags:
       - Auth
   /auth/register:
     post:
       consumes:
       - application/json
-      description: Register
       parameters:
       - description: Register request
         in: body

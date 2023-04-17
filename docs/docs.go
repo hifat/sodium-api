@@ -18,7 +18,6 @@ const docTemplate = `{
     "paths": {
         "/auth/login": {
             "post": {
-                "description": "Register",
                 "consumes": [
                     "application/json"
                 ],
@@ -28,7 +27,7 @@ const docTemplate = `{
                 "tags": [
                     "Auth"
                 ],
-                "summary": "Register",
+                "summary": "Login",
                 "parameters": [
                     {
                         "description": "Register request",
@@ -36,7 +35,7 @@ const docTemplate = `{
                         "in": "body",
                         "required": true,
                         "schema": {
-                            "$ref": "#/definitions/domain.RequestRegister"
+                            "$ref": "#/definitions/domain.ResponseLogin"
                         }
                     }
                 ],
@@ -70,7 +69,6 @@ const docTemplate = `{
         },
         "/auth/register": {
             "post": {
-                "description": "Register",
                 "consumes": [
                     "application/json"
                 ],
@@ -159,6 +157,17 @@ const docTemplate = `{
                 "username": {
                     "type": "string",
                     "maxLength": 100
+                }
+            }
+        },
+        "domain.ResponseLogin": {
+            "type": "object",
+            "properties": {
+                "accessToken": {
+                    "type": "string"
+                },
+                "refreshToken": {
+                    "type": "string"
                 }
             }
         },
