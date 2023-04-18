@@ -1,11 +1,15 @@
 package domain
 
-import "github.com/google/uuid"
+import (
+	"github.com/google/uuid"
+	"github.com/hifat/sodium-api/internal/utils/gorm/utype"
+)
 
 type AuthService interface {
 	Register(req RequestRegister, res *ResponseRegister) (err error)
 	Login(req RequestLogin, res *ResponseLogin) (err error)
 	Logout(ID uuid.UUID) (err error)
+	CreateRefreshToken(req RequestCreateRefreshToken) (res *ResponseCreateRefreshToken, err error)
 }
 
 type AuthRepository interface {
@@ -13,6 +17,7 @@ type AuthRepository interface {
 	Register(req RequestRegister, res *ResponseRegister) (err error)
 	Login(req RequestLogin, res *ResponseLoginRepo) (err error)
 	Logout(ID uuid.UUID) (err error)
+	CreateRefreshToken(req RequestCreateRefreshToken) (res *ResponseCreateRefreshToken, err error)
 }
 
 type RequestRegister struct {
@@ -27,8 +32,10 @@ type ResponseRegister struct {
 }
 
 type RequestLogin struct {
-	Username string `binding:"required,max=100" json:"username"`
-	Password string `binding:"required,max=100" json:"password"`
+	Username string   `binding:"required,max=100" json:"username"`
+	Password string   `binding:"required,max=100" json:"password"`
+	Agent    string   `json:"-"`
+	ClientIP utype.IP `json:"-"`
 }
 
 type ResponseLogin struct {
@@ -41,4 +48,19 @@ type ResponseLoginRepo struct {
 	Username string    `json:"username"`
 	Name     string    `json:"name"`
 	Password string    `json:"password"`
+}
+
+type RequestCreateRefreshToken struct {
+	Token    string    `json:"token"`
+	Agent    string    `json:"agent"`
+	ClientIP utype.IP  `json:"clientIP"`
+	UserID   uuid.UUID `json:"userID"`
+}
+
+type ResponseCreateRefreshToken struct {
+	Token    string    `json:"token"`
+	Agent    string    `json:"agent"`
+	ClientIP utype.IP  `json:"clientIP" gorm:"type:inet"`
+	UserID   uuid.UUID `json:"userID"`
+	IsActive bool      `json:"isActive"`
 }

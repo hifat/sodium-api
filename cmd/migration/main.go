@@ -14,4 +14,5 @@ func main() {
 
 func GormMigrate(db *gorm.DB) {
 	db.AutoMigrate(&gormModel.User{})
+	db.AutoMigrate(&gormModel.RefreshToken{})
 }

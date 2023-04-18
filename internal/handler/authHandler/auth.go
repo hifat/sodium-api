@@ -7,6 +7,7 @@ import (
 	"github.com/hifat/sodium-api/internal/domain"
 	"github.com/hifat/sodium-api/internal/handler/httpResponse"
 	"github.com/hifat/sodium-api/internal/utils/ernos"
+	"github.com/hifat/sodium-api/internal/utils/gorm/utype"
 	"github.com/hifat/sodium-api/internal/utils/response"
 	"github.com/hifat/sodium-api/internal/utils/validity"
 )
@@ -76,6 +77,9 @@ func (h authHandler) Login(ctx *gin.Context) {
 		httpResponse.FormErr(ctx, validity.Validate(err))
 		return
 	}
+
+	req.Agent = ctx.Request.UserAgent()
+	req.ClientIP = utype.IP(ctx.ClientIP())
 
 	res := domain.ResponseLogin{}
 	err = h.authService.Login(req, &res)
