@@ -1,4 +1,4 @@
-package domain
+package authDomain
 
 import (
 	"github.com/google/uuid"
@@ -7,15 +7,15 @@ import (
 
 type AuthService interface {
 	Register(req RequestRegister, res *ResponseRegister) (err error)
-	Login(req RequestLogin, res *ResponseLogin) (err error)
+	Login(req RequestLogin, res *ResponseRefreshToken) (err error)
 	Logout(ID uuid.UUID) (err error)
-	CreateRefreshToken(req RequestCreateRefreshToken) (res *ResponseCreateRefreshToken, err error)
+	CreateRefreshToken(req RequestCreateRefreshToken) (res *ResponseRefreshToken, err error)
 }
 
 type AuthRepository interface {
 	CheckUserExists(col, value string, exceptID *any) (exists bool, err error)
 	Register(req RequestRegister, res *ResponseRegister) (err error)
-	Login(req RequestLogin, res *ResponseLoginRepo) (err error)
+	Login(req RequestLogin, res *ResponseRefreshTokenRepo) (err error)
 	Logout(ID uuid.UUID) (err error)
 	CreateRefreshToken(req RequestCreateRefreshToken) (res *ResponseCreateRefreshToken, err error)
 }
@@ -38,12 +38,12 @@ type RequestLogin struct {
 	ClientIP utype.IP `json:"-"`
 }
 
-type ResponseLogin struct {
+type ResponseRefreshToken struct {
 	AccessToken  string `json:"accessToken"`
 	RefreshToken string `json:"refreshToken"`
 }
 
-type ResponseLoginRepo struct {
+type ResponseRefreshTokenRepo struct {
 	ID       uuid.UUID `json:"ID"`
 	Username string    `json:"username"`
 	Name     string    `json:"name"`

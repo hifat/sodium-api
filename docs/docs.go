@@ -35,7 +35,7 @@ const docTemplate = `{
                         "in": "body",
                         "required": true,
                         "schema": {
-                            "$ref": "#/definitions/domain.ResponseLogin"
+                            "$ref": "#/definitions/domain.ResponseRefreshToken"
                         }
                     }
                 ],
@@ -160,7 +160,7 @@ const docTemplate = `{
                 }
             }
         },
-        "domain.ResponseLogin": {
+        "domain.ResponseRefreshToken": {
             "type": "object",
             "properties": {
                 "accessToken": {

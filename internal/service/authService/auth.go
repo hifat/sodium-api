@@ -1,27 +1,33 @@
 package authService
 
 import (
+	"fmt"
 	"log"
 	"os"
 	"time"
 
 	"github.com/google/uuid"
 	"github.com/hifat/sodium-api/internal/constants"
-	"github.com/hifat/sodium-api/internal/domain"
+	"github.com/hifat/sodium-api/internal/domain/authDomain"
+	"github.com/hifat/sodium-api/internal/domain/userDomain"
 	"github.com/hifat/sodium-api/internal/utils"
 	"github.com/hifat/sodium-api/internal/utils/ernos"
 	"github.com/hifat/sodium-api/internal/utils/token"
 )
 
 type authService struct {
-	authRepo domain.AuthRepository
+	authRepo authDomain.AuthRepository
+	userRepo userDomain.UserRepository
 }
 
-func NewAuthService(authRepo domain.AuthRepository) domain.AuthService {
-	return &authService{authRepo}
+func NewAuthService(authRepo authDomain.AuthRepository, userRepo userDomain.UserRepository) authDomain.AuthService {
+	return &authService{
+		authRepo,
+		userRepo,
+	}
 }
 
-func (u authService) Register(req domain.RequestRegister, res *domain.ResponseRegister) (err error) {
+func (u authService) Register(req authDomain.RequestRegister, res *authDomain.ResponseRegister) (err error) {
 	exists, err := u.authRepo.CheckUserExists("username", req.Username, nil)
 	if err != nil {
 		return err
@@ -39,8 +45,8 @@ func (u authService) Register(req domain.RequestRegister, res *domain.ResponseRe
 	return u.authRepo.Register(req, res)
 }
 
-func (u authService) Login(req domain.RequestLogin, res *domain.ResponseLogin) (err error) {
-	var user domain.ResponseLoginRepo
+func (u authService) Login(req authDomain.RequestLogin, res *authDomain.ResponseRefreshToken) (err error) {
+	var user authDomain.ResponseRefreshTokenRepo
 	err = u.authRepo.Login(req, &user)
 	if err != nil {
 		if err.Error() == ernos.M.RECORD_NOTFOUND {
@@ -73,7 +79,7 @@ func (u authService) Login(req domain.RequestLogin, res *domain.ResponseLogin) (
 		return ernos.InternalServerError("")
 	}
 
-	newRefreshToken := domain.RequestCreateRefreshToken{
+	newRefreshToken := authDomain.RequestCreateRefreshToken{
 		Token:    refreshToken,
 		Agent:    req.Agent,
 		ClientIP: req.ClientIP,
@@ -82,7 +88,7 @@ func (u authService) Login(req domain.RequestLogin, res *domain.ResponseLogin) (
 
 	_, err = u.authRepo.CreateRefreshToken(newRefreshToken)
 
-	*res = domain.ResponseLogin{
+	*res = authDomain.ResponseRefreshToken{
 		AccessToken:  accessToken,
 		RefreshToken: refreshToken,
 	}
@@ -94,6 +100,46 @@ func (u authService) Logout(ID uuid.UUID) (err error) {
 	return nil
 }
 
-func (u authService) CreateRefreshToken(req domain.RequestCreateRefreshToken) (res *domain.ResponseCreateRefreshToken, err error) {
-	return nil, nil
+func (u authService) CreateRefreshToken(req authDomain.RequestCreateRefreshToken) (res *authDomain.ResponseRefreshToken, err error) {
+	username, err := u.userRepo.GetFieldsByID(req.UserID, "username")
+	if err != nil {
+		return nil, err
+	}
+
+	userPayload := token.UserPayload{
+		UserID:   req.UserID,
+		Username: fmt.Sprintf("%v", username[0]),
+	}
+
+	accessSecret := os.Getenv(constants.ACCESS_TOKEN_SECRET)
+	accessToken, _, err := token.CreateToken(accessSecret, userPayload, time.Minute*15)
+	if err != nil {
+		log.Println(err.Error())
+		return nil, ernos.InternalServerError("")
+	}
+
+	expired := time.Now().AddDate(0, 0, 7)
+	refreshSecret := os.Getenv(constants.REFRESH_TOKEN_SECRET)
+	refreshToken, _, err := token.CreateToken(refreshSecret, userPayload, time.Until(expired))
+	if err != nil {
+		log.Println(err.Error())
+		return nil, ernos.InternalServerError("")
+	}
+
+	newRefreshToken := authDomain.RequestCreateRefreshToken{
+		Token:    refreshToken,
+		Agent:    req.Agent,
+		ClientIP: req.ClientIP,
+		UserID:   req.UserID,
+	}
+
+	_, err = u.authRepo.CreateRefreshToken(newRefreshToken)
+	if err != nil {
+		return nil, err
+	}
+
+	return &authDomain.ResponseRefreshToken{
+		AccessToken:  accessToken,
+		RefreshToken: refreshToken,
+	}, nil
 }

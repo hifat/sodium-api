@@ -28,7 +28,7 @@ definitions:
     - password
     - username
     type: object
-  domain.ResponseLogin:
+  domain.ResponseRefreshToken:
     properties:
       accessToken:
         type: string
@@ -68,7 +68,7 @@ paths:
         name: Body
         required: true
         schema:
-          $ref: '#/definitions/domain.ResponseLogin'
+          $ref: '#/definitions/domain.ResponseRefreshToken'
       produces:
       - application/json
       responses:
