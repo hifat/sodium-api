@@ -15,7 +15,7 @@
                 "tags": [
                     "Auth"
                 ],
-                "summary": "Login",
+                "summary": "Get Refresh Token",
                 "parameters": [
                     {
                         "description": "Register request",
@@ -23,7 +23,7 @@
                         "in": "body",
                         "required": true,
                         "schema": {
-                            "$ref": "#/definitions/domain.ResponseRefreshToken"
+                            "$ref": "#/definitions/authDomain.RequestCreateRefreshToken"
                         }
                     }
                 ],
@@ -31,7 +31,7 @@
                     "200": {
                         "description": "OK",
                         "schema": {
-                            "$ref": "#/definitions/domain.RequestLogin"
+                            "$ref": "#/definitions/authDomain.ResponseRefreshToken"
                         }
                     },
                     "401": {
@@ -74,7 +74,7 @@
                         "in": "body",
                         "required": true,
                         "schema": {
-                            "$ref": "#/definitions/domain.RequestRegister"
+                            "$ref": "#/definitions/authDomain.RequestRegister"
                         }
                     }
                 ],
@@ -82,7 +82,7 @@
                     "200": {
                         "description": "OK",
                         "schema": {
-                            "$ref": "#/definitions/domain.ResponseRegister"
+                            "$ref": "#/definitions/authDomain.ResponseRegister"
                         }
                     },
                     "409": {
@@ -108,7 +108,10 @@
         }
     },
     "definitions": {
-        "domain.RequestLogin": {
+        "authDomain.RequestCreateRefreshToken": {
+            "type": "object"
+        },
+        "authDomain.RequestLogin": {
             "type": "object",
             "required": [
                 "password",
@@ -125,7 +128,7 @@
                 }
             }
         },
-        "domain.RequestRegister": {
+        "authDomain.RequestRegister": {
             "type": "object",
             "required": [
                 "name",
@@ -148,7 +151,7 @@
                 }
             }
         },
-        "domain.ResponseRefreshToken": {
+        "authDomain.ResponseRefreshToken": {
             "type": "object",
             "properties": {
                 "accessToken": {
@@ -159,7 +162,7 @@
                 }
             }
         },
-        "domain.ResponseRegister": {
+        "authDomain.ResponseRegister": {
             "type": "object",
             "properties": {
                 "name": {

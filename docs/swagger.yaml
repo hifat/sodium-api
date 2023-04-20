@@ -1,5 +1,7 @@
 definitions:
-  domain.RequestLogin:
+  authDomain.RequestCreateRefreshToken:
+    type: object
+  authDomain.RequestLogin:
     properties:
       password:
         maxLength: 100
@@ -11,7 +13,7 @@ definitions:
     - password
     - username
     type: object
-  domain.RequestRegister:
+  authDomain.RequestRegister:
     properties:
       name:
         maxLength: 100
@@ -28,14 +30,14 @@ definitions:
     - password
     - username
     type: object
-  domain.ResponseRefreshToken:
+  authDomain.ResponseRefreshToken:
     properties:
       accessToken:
         type: string
       refreshToken:
         type: string
     type: object
-  domain.ResponseRegister:
+  authDomain.ResponseRegister:
     properties:
       name:
         type: string
@@ -68,14 +70,14 @@ paths:
         name: Body
         required: true
         schema:
-          $ref: '#/definitions/domain.ResponseRefreshToken'
+          $ref: '#/definitions/authDomain.RequestCreateRefreshToken'
       produces:
       - application/json
       responses:
         "200":
           description: OK
           schema:
-            $ref: '#/definitions/domain.RequestLogin'
+            $ref: '#/definitions/authDomain.ResponseRefreshToken'
         "401":
           description: Username or password is incorect
           schema:
@@ -88,7 +90,7 @@ paths:
           description: Internal server error
           schema:
             $ref: '#/definitions/response.ErrorResponse'
-      summary: Login
+      summary: Get Refresh Token
       tags:
       - Auth
   /auth/register:
@@ -101,14 +103,14 @@ paths:
         name: Body
         required: true
         schema:
-          $ref: '#/definitions/domain.RequestRegister'
+          $ref: '#/definitions/authDomain.RequestRegister'
       produces:
       - application/json
       responses:
         "200":
           description: OK
           schema:
-            $ref: '#/definitions/domain.ResponseRegister'
+            $ref: '#/definitions/authDomain.ResponseRegister'
         "409":
           description: Duplicate record
           schema:

@@ -59,41 +59,24 @@ func (u authService) Login(req authDomain.RequestLogin, res *authDomain.Response
 		return err
 	}
 
-	userPayload := token.UserPayload{
-		UserID:   user.ID,
-		Username: user.Username,
-	}
-
-	accessSecret := os.Getenv(constants.ACCESS_TOKEN_SECRET)
-	accessToken, _, err := token.CreateToken(accessSecret, userPayload, time.Minute*15)
-	if err != nil {
-		log.Println(err.Error())
-		return ernos.InternalServerError("")
-	}
-
-	expired := time.Now().AddDate(0, 0, 7)
-	refreshSecret := os.Getenv(constants.REFRESH_TOKEN_SECRET)
-	refreshToken, _, err := token.CreateToken(refreshSecret, userPayload, time.Until(expired))
-	if err != nil {
-		log.Println(err.Error())
-		return ernos.InternalServerError("")
-	}
-
 	newRefreshToken := authDomain.RequestCreateRefreshToken{
-		Token:    refreshToken,
 		Agent:    req.Agent,
 		ClientIP: req.ClientIP,
 		UserID:   user.ID,
 	}
 
-	_, err = u.authRepo.CreateRefreshToken(newRefreshToken)
-
-	*res = authDomain.ResponseRefreshToken{
-		AccessToken:  accessToken,
-		RefreshToken: refreshToken,
+	newToken, err := u.CreateRefreshToken(newRefreshToken)
+	if err != nil {
+		log.Println(err.Error())
+		return ernos.InternalServerError("")
 	}
 
-	return
+	*res = authDomain.ResponseRefreshToken{
+		AccessToken:  newToken.AccessToken,
+		RefreshToken: newToken.RefreshToken,
+	}
+
+	return nil
 }
 
 func (u authService) Logout(ID uuid.UUID) (err error) {

@@ -105,12 +105,12 @@ func (h authHandler) Login(ctx *gin.Context) {
 // @Tags		Auth
 // @Accept		json
 // @Produce		json
-// @Success		200 {object} authDomain.RequestLogin
+// @Success		200 {object} authDomain.ResponseRefreshToken
 // @Success		401 {object} response.ErrorResponse "Username or password is incorect"
 // @Success		422 {object} response.ErrorResponse "Form validation error"
 // @Success		500 {object} response.ErrorResponse "Internal server error"
 // @Router		/auth/login [post]
-// @Param		Body body authDomain.ResponseRefreshToken true "Register request"
+// @Param		Body body authDomain.RequestCreateRefreshToken true "Register request"
 func (h authHandler) CreateRefreshToken(ctx *gin.Context) {
 	userID, _ := uuid.Parse("11515e06-a4d1-4815-96e1-0567851fdc07") // Test mock ID
 	req := authDomain.RequestCreateRefreshToken{
