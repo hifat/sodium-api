@@ -1,6 +1,8 @@
 package authDomain
 
 import (
+	"time"
+
 	"github.com/google/uuid"
 	"github.com/hifat/sodium-api/internal/utils/gorm/utype"
 )
@@ -18,6 +20,7 @@ type AuthRepository interface {
 	Login(req RequestLogin, res *ResponseRefreshTokenRepo) (err error)
 	Logout(ID uuid.UUID) (err error)
 	CreateRefreshToken(req RequestCreateRefreshToken) (res *ResponseCreateRefreshToken, err error)
+	GetRefreshTokenByID(refreshTokenID uuid.UUID, res *ResponseRefreshTokenClaim) (err error)
 }
 
 type RequestRegister struct {
@@ -51,6 +54,7 @@ type ResponseRefreshTokenRepo struct {
 }
 
 type RequestCreateRefreshToken struct {
+	ID       uuid.UUID `json:"ID"`
 	Token    string    `json:"token"`
 	Agent    string    `json:"agent"`
 	ClientIP utype.IP  `json:"clientIP"`
@@ -63,4 +67,19 @@ type ResponseCreateRefreshToken struct {
 	ClientIP utype.IP  `json:"clientIP" gorm:"type:inet"`
 	UserID   uuid.UUID `json:"userID"`
 	IsActive bool      `json:"isActive"`
+}
+
+type ResponseRefreshTokenClaim struct {
+	ID        uuid.UUID `gorm:"primaryKey; type:uuid; default:uuid_generate_v4()" json:"ID"`
+	Token     string    `gorm:"type:text;unique" json:"token"`
+	Agent     string    `gorm:"type:varchar(100)" json:"agent"`
+	ClientIP  utype.IP  `gorm:"type:text" json:"clientIP"`
+	IsActive  bool      `gorm:"boolean; default:true" json:"isActive"`
+	UserID    uuid.UUID `gorm:"type:uuid" json:"userID"`
+	CreatedAt time.Time `json:"createdAt"`
+	UpdatedAt time.Time `json:"updatedAt"`
+}
+
+type RequestToken struct {
+	RefreshToken string `binding:"required" json:"refreshToken"`
 }

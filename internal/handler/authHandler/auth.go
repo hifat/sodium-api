@@ -4,12 +4,12 @@ import (
 	"fmt"
 
 	"github.com/gin-gonic/gin"
-	"github.com/google/uuid"
 	"github.com/hifat/sodium-api/internal/domain/authDomain"
 	"github.com/hifat/sodium-api/internal/handler/httpResponse"
 	"github.com/hifat/sodium-api/internal/utils/ernos"
 	"github.com/hifat/sodium-api/internal/utils/gorm/utype"
 	"github.com/hifat/sodium-api/internal/utils/response"
+	"github.com/hifat/sodium-api/internal/utils/token"
 	"github.com/hifat/sodium-api/internal/utils/validity"
 )
 
@@ -109,12 +109,12 @@ func (h authHandler) Login(ctx *gin.Context) {
 // @Success		401 {object} response.ErrorResponse "Username or password is incorect"
 // @Success		422 {object} response.ErrorResponse "Form validation error"
 // @Success		500 {object} response.ErrorResponse "Internal server error"
-// @Router		/auth/login [post]
+// @Router		/auth/token/refresh [post]
 // @Param		Body body authDomain.RequestCreateRefreshToken true "Register request"
 func (h authHandler) CreateRefreshToken(ctx *gin.Context) {
-	userID, _ := uuid.Parse("11515e06-a4d1-4815-96e1-0567851fdc07") // Test mock ID
+	credentials := ctx.MustGet("credentials").(*token.Payload)
 	req := authDomain.RequestCreateRefreshToken{
-		UserID:   userID,
+		UserID:   credentials.UserID,
 		Agent:    ctx.Request.UserAgent(),
 		ClientIP: utype.IP(ctx.ClientIP()),
 	}

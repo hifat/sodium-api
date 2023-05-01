@@ -76,6 +76,7 @@ func (ip IP) Value() (driver.Value, error) {
 
 func (r authRepository) CreateRefreshToken(req authDomain.RequestCreateRefreshToken) (res *authDomain.ResponseCreateRefreshToken, err error) {
 	refreshToken := gormModel.RefreshToken{
+		ID:       req.ID,
 		Token:    req.Token,
 		Agent:    req.Agent,
 		ClientIP: req.ClientIP,
@@ -83,4 +84,10 @@ func (r authRepository) CreateRefreshToken(req authDomain.RequestCreateRefreshTo
 	}
 
 	return res, r.db.Create(&refreshToken).Scan(&res).Error
+}
+
+func (r authRepository) GetRefreshTokenByID(refreshTokenID uuid.UUID, res *authDomain.ResponseRefreshTokenClaim) (err error) {
+	return r.db.Model(&gormModel.RefreshToken{}).
+		Where("id = ?", refreshTokenID).
+		First(&res).Error
 }

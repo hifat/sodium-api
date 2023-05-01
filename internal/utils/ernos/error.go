@@ -1,5 +1,7 @@
 package ernos
 
+import "net/http"
+
 type Ernos struct {
 	Message string
 	Code    string
@@ -33,7 +35,19 @@ func NotFound(value string) error {
 	}
 }
 
-func Unauthorized(value string, code string) error {
+func Forbidden(value string) error {
+	msg := http.StatusText(http.StatusForbidden)
+	if value != "" {
+		msg = value
+	}
+
+	return Ernos{
+		Message: msg,
+		Code:    C.RECORD_NOTFOUND,
+	}
+}
+
+func Unauthorized(value string) error {
 	msg := M.UNAUTHORIZED
 	if value != "" {
 		msg = value

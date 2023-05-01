@@ -12,7 +12,7 @@ import (
 func handleError(ctx *gin.Context, httpCode int, err error) {
 	if _, ok := err.(ernos.Ernos); ok {
 		log.Println(err.(ernos.Ernos).Error())
-		ctx.AbortWithStatusJSON(http.StatusUnauthorized, response.ErrorResponse{
+		ctx.AbortWithStatusJSON(httpCode, response.ErrorResponse{
 			Error: response.ErrorMessageResponse{
 				Message: err.(ernos.Ernos).Message,
 				Code:    err.(ernos.Ernos).Code,
@@ -22,12 +22,16 @@ func handleError(ctx *gin.Context, httpCode int, err error) {
 	}
 
 	log.Println(err.Error())
-	ctx.AbortWithStatusJSON(http.StatusUnauthorized, response.ErrorResponse{
+	ctx.AbortWithStatusJSON(httpCode, response.ErrorResponse{
 		Error: response.ErrorMessageResponse{
 			Message: err.Error(),
 			Code:    "",
 		},
 	})
+}
+
+func BadRequest(ctx *gin.Context, err any) {
+	ctx.AbortWithStatusJSON(http.StatusBadRequest, err.(error).Error())
 }
 
 func FormErr(ctx *gin.Context, err any) {
@@ -49,6 +53,10 @@ func Created(ctx *gin.Context, obj any) {
 
 func Success(ctx *gin.Context, obj any) {
 	ctx.JSON(http.StatusOK, obj)
+}
+
+func Forbidden(ctx *gin.Context, err error) {
+	handleError(ctx, http.StatusForbidden, err)
 }
 
 func Conflict(ctx *gin.Context, err error) {

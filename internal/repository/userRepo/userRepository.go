@@ -15,9 +15,10 @@ func NewUserRepository(db *gorm.DB) userDomain.UserRepository {
 	return &userRepository{db}
 }
 
-func (r userRepository) GetFieldsByID(ID uuid.UUID, field string) (value []interface{}, err error) {
-	return value, r.db.Model(&gormModel.User{}).
+func (r userRepository) GetFieldsByID(ID uuid.UUID, field string) (value interface{}, err error) {
+	var fields []interface{}
+	return fields[0], r.db.Model(&gormModel.User{}).
 		Select(field).
 		Where("id = ?", ID).
-		Pluck(field, &value).Error
+		Pluck(field, &fields).Error
 }
