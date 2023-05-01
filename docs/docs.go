@@ -27,7 +27,7 @@ const docTemplate = `{
                 "tags": [
                     "Auth"
                 ],
-                "summary": "Login",
+                "summary": "Get Refresh Token",
                 "parameters": [
                     {
                         "description": "Register request",
@@ -35,7 +35,7 @@ const docTemplate = `{
                         "in": "body",
                         "required": true,
                         "schema": {
-                            "$ref": "#/definitions/domain.ResponseLogin"
+                            "$ref": "#/definitions/authDomain.RequestCreateRefreshToken"
                         }
                     }
                 ],
@@ -43,7 +43,7 @@ const docTemplate = `{
                     "200": {
                         "description": "OK",
                         "schema": {
-                            "$ref": "#/definitions/domain.RequestLogin"
+                            "$ref": "#/definitions/authDomain.ResponseRefreshToken"
                         }
                     },
                     "401": {
@@ -86,7 +86,7 @@ const docTemplate = `{
                         "in": "body",
                         "required": true,
                         "schema": {
-                            "$ref": "#/definitions/domain.RequestRegister"
+                            "$ref": "#/definitions/authDomain.RequestRegister"
                         }
                     }
                 ],
@@ -94,7 +94,7 @@ const docTemplate = `{
                     "200": {
                         "description": "OK",
                         "schema": {
-                            "$ref": "#/definitions/domain.ResponseRegister"
+                            "$ref": "#/definitions/authDomain.ResponseRegister"
                         }
                     },
                     "409": {
@@ -120,7 +120,10 @@ const docTemplate = `{
         }
     },
     "definitions": {
-        "domain.RequestLogin": {
+        "authDomain.RequestCreateRefreshToken": {
+            "type": "object"
+        },
+        "authDomain.RequestLogin": {
             "type": "object",
             "required": [
                 "password",
@@ -137,7 +140,7 @@ const docTemplate = `{
                 }
             }
         },
-        "domain.RequestRegister": {
+        "authDomain.RequestRegister": {
             "type": "object",
             "required": [
                 "name",
@@ -160,7 +163,7 @@ const docTemplate = `{
                 }
             }
         },
-        "domain.ResponseLogin": {
+        "authDomain.ResponseRefreshToken": {
             "type": "object",
             "properties": {
                 "accessToken": {
@@ -171,7 +174,7 @@ const docTemplate = `{
                 }
             }
         },
-        "domain.ResponseRegister": {
+        "authDomain.ResponseRegister": {
             "type": "object",
             "properties": {
                 "name": {
