@@ -27,7 +27,7 @@ const docTemplate = `{
                 "tags": [
                     "Auth"
                 ],
-                "summary": "Get Refresh Token",
+                "summary": "Login",
                 "parameters": [
                     {
                         "description": "Register request",
@@ -35,7 +35,7 @@ const docTemplate = `{
                         "in": "body",
                         "required": true,
                         "schema": {
-                            "$ref": "#/definitions/authDomain.RequestCreateRefreshToken"
+                            "$ref": "#/definitions/authDomain.RequestLogin"
                         }
                     }
                 ],
@@ -117,12 +117,60 @@ const docTemplate = `{
                     }
                 }
             }
+        },
+        "/auth/token/refresh": {
+            "post": {
+                "consumes": [
+                    "application/json"
+                ],
+                "produces": [
+                    "application/json"
+                ],
+                "tags": [
+                    "Auth"
+                ],
+                "summary": "Get Refresh Token",
+                "parameters": [
+                    {
+                        "description": "Register request",
+                        "name": "Body",
+                        "in": "body",
+                        "required": true,
+                        "schema": {
+                            "$ref": "#/definitions/authDomain.RequestToken"
+                        }
+                    }
+                ],
+                "responses": {
+                    "200": {
+                        "description": "OK",
+                        "schema": {
+                            "$ref": "#/definitions/authDomain.ResponseRefreshToken"
+                        }
+                    },
+                    "401": {
+                        "description": "Username or password is incorect",
+                        "schema": {
+                            "$ref": "#/definitions/response.ErrorResponse"
+                        }
+                    },
+                    "422": {
+                        "description": "Form validation error",
+                        "schema": {
+                            "$ref": "#/definitions/response.ErrorResponse"
+                        }
+                    },
+                    "500": {
+                        "description": "Internal server error",
+                        "schema": {
+                            "$ref": "#/definitions/response.ErrorResponse"
+                        }
+                    }
+                }
+            }
         }
     },
     "definitions": {
-        "authDomain.RequestCreateRefreshToken": {
-            "type": "object"
-        },
         "authDomain.RequestLogin": {
             "type": "object",
             "required": [
@@ -163,6 +211,17 @@ const docTemplate = `{
                 }
             }
         },
+        "authDomain.RequestToken": {
+            "type": "object",
+            "required": [
+                "refreshToken"
+            ],
+            "properties": {
+                "refreshToken": {
+                    "type": "string"
+                }
+            }
+        },
         "authDomain.ResponseRefreshToken": {
             "type": "object",
             "properties": {
@@ -185,7 +244,7 @@ const docTemplate = `{
                 }
             }
         },
-        "response.ErrorMessageResponse": {
+        "ernos.Ernos": {
             "type": "object",
             "properties": {
                 "attribute": {},
@@ -194,6 +253,9 @@ const docTemplate = `{
                 },
                 "message": {
                     "type": "string"
+                },
+                "status": {
+                    "type": "integer"
                 }
             }
         },
@@ -201,7 +263,7 @@ const docTemplate = `{
             "type": "object",
             "properties": {
                 "error": {
-                    "$ref": "#/definitions/response.ErrorMessageResponse"
+                    "$ref": "#/definitions/ernos.Ernos"
                 }
             }
         }

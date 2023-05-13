@@ -57,14 +57,14 @@ type RequestCreateRefreshToken struct {
 	ID       uuid.UUID `json:"ID"`
 	Token    string    `json:"token"`
 	Agent    string    `json:"agent"`
-	ClientIP utype.IP  `json:"clientIP"`
+	ClientIP utype.IP  `json:"clientIP" swaggertype:"string"`
 	UserID   uuid.UUID `json:"userID"`
 }
 
 type ResponseCreateRefreshToken struct {
 	Token    string    `json:"token"`
 	Agent    string    `json:"agent"`
-	ClientIP utype.IP  `json:"clientIP" gorm:"type:inet"`
+	ClientIP utype.IP  `json:"clientIP" swaggertype:"string" gorm:"type:inet"`
 	UserID   uuid.UUID `json:"userID"`
 	IsActive bool      `json:"isActive"`
 }
@@ -73,7 +73,7 @@ type ResponseRefreshTokenClaim struct {
 	ID        uuid.UUID `gorm:"primaryKey; type:uuid; default:uuid_generate_v4()" json:"ID"`
 	Token     string    `gorm:"type:text;unique" json:"token"`
 	Agent     string    `gorm:"type:varchar(100)" json:"agent"`
-	ClientIP  utype.IP  `gorm:"type:text" json:"clientIP"`
+	ClientIP  utype.IP  `gorm:"type:text" swaggertype:"string" json:"clientIP"`
 	IsActive  bool      `gorm:"boolean; default:true" json:"isActive"`
 	UserID    uuid.UUID `gorm:"type:uuid" json:"userID"`
 	CreatedAt time.Time `json:"createdAt"`

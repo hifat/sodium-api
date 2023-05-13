@@ -27,4 +27,4 @@ make swag
 
 - [ ] Error validate message not show index when use `dive`
 - [ ] Change key name to json tag when validation error
-- [ ] Swagger not support some type such as `net.IP`, `utype.IP`
+- [x] Swagger not support some type such as `net.IP`, `utype.IP`
