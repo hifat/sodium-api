@@ -1,6 +1,7 @@
 package middlewareService
 
 import (
+	"net/http"
 	"os"
 	"strings"
 
@@ -23,6 +24,7 @@ func (s authMiddlewareService) AuthGuard(authTokenHeader string) (payload *token
 	accessToken := strings.TrimPrefix(authTokenHeader, "Bearer ")
 	if accessToken == authTokenHeader {
 		return nil, ernos.Other(ernos.Ernos{
+			Status:  http.StatusBadRequest,
 			Message: ernos.M.NOT_FOUND_BEARER,
 			Code:    ernos.C.NOT_FOUND_BEARER,
 		})
@@ -31,6 +33,7 @@ func (s authMiddlewareService) AuthGuard(authTokenHeader string) (payload *token
 	payload, err = token.VerifyToken(os.Getenv(constants.REFRESH_TOKEN_SECRET), accessToken)
 	if err != nil {
 		return nil, ernos.Other(ernos.Ernos{
+			Status:  http.StatusUnauthorized,
 			Message: ernos.M.BROKEN_TOKEN,
 			Code:    ernos.C.BROKEN_TOKEN,
 		})
@@ -53,7 +56,7 @@ func (s authMiddlewareService) AuthRefreshGuard(refreshToken string) (payload *t
 	}
 
 	if !claim.IsActive {
-		return nil, ernos.Unauthorized("")
+		return nil, ernos.Unauthorized()
 	}
 
 	payload = &token.Payload{

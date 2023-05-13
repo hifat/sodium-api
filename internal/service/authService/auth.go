@@ -3,6 +3,7 @@ package authService
 import (
 	"fmt"
 	"log"
+	"net/http"
 	"os"
 	"time"
 
@@ -30,7 +31,8 @@ func NewAuthService(authRepo authDomain.AuthRepository, userRepo userDomain.User
 func (u authService) Register(req authDomain.RequestRegister, res *authDomain.ResponseRegister) (err error) {
 	exists, err := u.authRepo.CheckUserExists("username", req.Username, nil)
 	if err != nil {
-		return err
+		log.Println(err)
+		return ernos.InternalServerError()
 	}
 
 	if exists {
@@ -39,7 +41,8 @@ func (u authService) Register(req authDomain.RequestRegister, res *authDomain.Re
 
 	req.Password, err = utils.HashPassword(req.Password)
 	if err != nil {
-		return err
+		log.Println(err)
+		return ernos.InternalServerError()
 	}
 
 	return u.authRepo.Register(req, res)
@@ -51,6 +54,7 @@ func (u authService) Login(req authDomain.RequestLogin, res *authDomain.Response
 	if err != nil {
 		if err.Error() == ernos.M.RECORD_NOTFOUND {
 			return ernos.Other(ernos.Ernos{
+				Status:  http.StatusUnauthorized,
 				Message: "Username or password is incorrect",
 				Code:    ernos.C.INVALID_CREDENTIALS,
 			})
@@ -68,7 +72,7 @@ func (u authService) Login(req authDomain.RequestLogin, res *authDomain.Response
 	newToken, err := u.CreateRefreshToken(newRefreshToken)
 	if err != nil {
 		log.Println(err.Error())
-		return ernos.InternalServerError("")
+		return ernos.InternalServerError()
 	}
 
 	*res = authDomain.ResponseRefreshToken{
@@ -98,7 +102,7 @@ func (u authService) CreateRefreshToken(req authDomain.RequestCreateRefreshToken
 	accessToken, _, err := token.CreateToken(accessSecret, userPayload, time.Minute*15)
 	if err != nil {
 		log.Println(err.Error())
-		return nil, ernos.InternalServerError("")
+		return nil, ernos.InternalServerError()
 	}
 
 	expired := time.Now().AddDate(0, 0, 7)
@@ -106,7 +110,7 @@ func (u authService) CreateRefreshToken(req authDomain.RequestCreateRefreshToken
 	refreshToken, refreshPayload, err := token.CreateToken(refreshSecret, userPayload, time.Until(expired))
 	if err != nil {
 		log.Println(err.Error())
-		return nil, ernos.InternalServerError("")
+		return nil, ernos.InternalServerError()
 	}
 
 	newRefreshToken := authDomain.RequestCreateRefreshToken{
@@ -119,7 +123,8 @@ func (u authService) CreateRefreshToken(req authDomain.RequestCreateRefreshToken
 
 	_, err = u.authRepo.CreateRefreshToken(newRefreshToken)
 	if err != nil {
-		return nil, err
+		log.Println(err.Error())
+		return nil, ernos.InternalServerError()
 	}
 
 	return &authDomain.ResponseRefreshToken{
