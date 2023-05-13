@@ -1,32 +1,38 @@
 package ernos
 
-import "net/http"
+import (
+	"net/http"
+	"strings"
+)
 
 type Ernos struct {
-	Message string
-	Code    string
+	Status    int    `json:"status,omitempty"`
+	Message   string `json:"message,omitempty"`
+	Code      string `json:"code,omitempty"`
+	Attribute any    `json:"attribute,omitempty"`
 }
 
 func (e Ernos) Error() string {
 	return e.Message
 }
 
-func HasAlreadyExists(value string) error {
+func HasAlreadyExists(value ...string) error {
 	msg := M.DUPLICATE_RECORD
-	if value != "" {
-		msg = value + " has already exists"
+	if len(value) > 0 {
+		msg = strings.Join(value, "") + " has already exists"
 	}
 
 	return Ernos{
+		Status:  http.StatusConflict,
 		Message: msg,
 		Code:    C.DUPLICATE_RECORD,
 	}
 }
 
-func NotFound(value string) error {
+func NotFound(value ...string) error {
 	msg := M.RECORD_NOTFOUND
-	if value != "" {
-		msg = value + " not found"
+	if len(value) > 0 {
+		msg = strings.Join(value, "") + " not found"
 	}
 
 	return Ernos{
@@ -47,25 +53,27 @@ func Forbidden(value string) error {
 	}
 }
 
-func Unauthorized(value string) error {
+func Unauthorized(value ...string) error {
 	msg := M.UNAUTHORIZED
-	if value != "" {
-		msg = value
+	if len(value) > 0 {
+		msg = strings.Join(value, "")
 	}
 
 	return Ernos{
+		Status:  http.StatusUnauthorized,
 		Message: msg,
 		Code:    C.UNAUTHORIZED,
 	}
 }
 
-func InternalServerError(value string) error {
+func InternalServerError(value ...string) error {
 	msg := M.INTERNAL_SERVER_ERROR
-	if value != "" {
-		msg = value
+	if len(value) > 0 {
+		msg = strings.Join(value, "")
 	}
 
 	return Ernos{
+		Status:  http.StatusInternalServerError,
 		Message: msg,
 		Code:    C.INTERNAL_SERVER_ERROR,
 	}

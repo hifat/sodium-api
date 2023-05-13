@@ -1,7 +1,9 @@
 package response
 
+import "github.com/hifat/sodium-api/internal/utils/ernos"
+
 type ErrorResponse struct {
-	Error ErrorMessageResponse `json:"error"`
+	Error ernos.Ernos `json:"error"`
 }
 
 type ErrorMessageResponse struct {
@@ -19,14 +21,14 @@ type SuccesResponse struct {
 func HandleErr(err any) ErrorResponse {
 	if _, ok := err.(error); ok {
 		return ErrorResponse{
-			Error: ErrorMessageResponse{
+			Error: ernos.Ernos{
 				Message: err.(error).Error(),
 			},
 		}
 	}
 
 	return ErrorResponse{
-		Error: ErrorMessageResponse{
+		Error: ernos.Ernos{
 			Attribute: err,
 		},
 	}
