@@ -13,7 +13,7 @@ func handleError(ctx *gin.Context, httpCode int, err error) {
 	if _, ok := err.(ernos.Ernos); ok {
 		log.Println(err.(ernos.Ernos).Error())
 		ctx.AbortWithStatusJSON(httpCode, response.ErrorResponse{
-			Error: response.ErrorMessageResponse{
+			Error: ernos.Ernos{
 				Message: err.(ernos.Ernos).Message,
 				Code:    err.(ernos.Ernos).Code,
 			},
@@ -23,11 +23,22 @@ func handleError(ctx *gin.Context, httpCode int, err error) {
 
 	log.Println(err.Error())
 	ctx.AbortWithStatusJSON(httpCode, response.ErrorResponse{
-		Error: response.ErrorMessageResponse{
+		Error: ernos.Ernos{
 			Message: err.Error(),
 			Code:    "",
 		},
 	})
+}
+
+func Error(ctx *gin.Context, err any) {
+	if e, ok := err.(ernos.Ernos); ok {
+		ctx.AbortWithStatusJSON(e.Status, response.ErrorResponse{
+			Error: e,
+		})
+		return
+	}
+
+	ctx.AbortWithStatusJSON(http.StatusInternalServerError, http.StatusText(http.StatusInternalServerError))
 }
 
 func BadRequest(ctx *gin.Context, err any) {
@@ -41,7 +52,7 @@ func FormErr(ctx *gin.Context, err any) {
 func InternalError(ctx *gin.Context, err any) {
 	log.Println(err.(error).Error())
 	ctx.AbortWithStatusJSON(http.StatusInternalServerError, response.ErrorResponse{
-		Error: response.ErrorMessageResponse{
+		Error: ernos.Ernos{
 			Message: http.StatusText(http.StatusInternalServerError),
 		},
 	})

@@ -6,7 +6,6 @@ import (
 	"github.com/gin-gonic/gin"
 	"github.com/hifat/sodium-api/internal/domain/authDomain"
 	"github.com/hifat/sodium-api/internal/handler/httpResponse"
-	"github.com/hifat/sodium-api/internal/utils/ernos"
 	"github.com/hifat/sodium-api/internal/utils/gorm/utype"
 	"github.com/hifat/sodium-api/internal/utils/response"
 	"github.com/hifat/sodium-api/internal/utils/token"
@@ -45,14 +44,7 @@ func (h authHandler) Register(ctx *gin.Context) {
 	var res authDomain.ResponseRegister
 	err = h.authService.Register(req, &res)
 	if err != nil {
-		if e, ok := err.(ernos.Ernos); ok {
-			if e.Code == ernos.C.DUPLICATE_RECORD {
-				httpResponse.Conflict(ctx, err)
-				return
-			}
-		}
-
-		httpResponse.InternalError(ctx, err)
+		httpResponse.Error(ctx, err)
 		return
 	}
 
@@ -85,14 +77,7 @@ func (h authHandler) Login(ctx *gin.Context) {
 	res := authDomain.ResponseRefreshToken{}
 	err = h.authService.Login(req, &res)
 	if err != nil {
-		if e, ok := err.(ernos.Ernos); ok {
-			if e.Code == ernos.C.INVALID_CREDENTIALS {
-				httpResponse.Unauthorized(ctx, err)
-				return
-			}
-		}
-
-		httpResponse.InternalError(ctx, err)
+		httpResponse.Error(ctx, err)
 		return
 	}
 
@@ -121,14 +106,7 @@ func (h authHandler) CreateRefreshToken(ctx *gin.Context) {
 
 	res, err := h.authService.CreateRefreshToken(req)
 	if err != nil {
-		if e, ok := err.(ernos.Ernos); ok {
-			if e.Code == ernos.C.INVALID_CREDENTIALS {
-				httpResponse.Unauthorized(ctx, err)
-				return
-			}
-		}
-
-		httpResponse.InternalError(ctx, err)
+		httpResponse.Error(ctx, err)
 		return
 	}
 

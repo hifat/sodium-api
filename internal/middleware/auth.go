@@ -46,21 +46,7 @@ func (m authMiddleware) AuthRefreshGuard(ctx *gin.Context) {
 
 	payload, err := m.authMiddlewareService.AuthRefreshGuard(req.RefreshToken)
 	if err != nil {
-		if e, ok := err.(ernos.Ernos); ok {
-			switch e.Code {
-			case ernos.C.NOT_FOUND_BEARER, ernos.C.BROKEN_TOKEN:
-				httpResponse.Forbidden(ctx, err)
-				return
-			case ernos.C.RECORD_NOTFOUND:
-				httpResponse.Forbidden(ctx, err)
-				return
-			case ernos.C.UNAUTHORIZED:
-				httpResponse.Unauthorized(ctx, err)
-				return
-			}
-		}
-
-		httpResponse.InternalError(ctx, err)
+		httpResponse.Error(ctx, err)
 		return
 	}
 
