@@ -57,12 +57,12 @@ func (h authHandler) Register(ctx *gin.Context) {
 // @Tags		Auth
 // @Accept		json
 // @Produce		json
-// @Success		200 {object} authDomain.RequestLogin
+// @Success		200 {object} authDomain.ResponseRefreshToken
 // @Success		401 {object} response.ErrorResponse "Username or password is incorect"
 // @Success		422 {object} response.ErrorResponse "Form validation error"
 // @Success		500 {object} response.ErrorResponse "Internal server error"
 // @Router		/auth/login [post]
-// @Param		Body body authDomain.ResponseRefreshToken true "Register request"
+// @Param		Body body authDomain.RequestLogin true "Register request"
 func (h authHandler) Login(ctx *gin.Context) {
 	var req authDomain.RequestLogin
 	err := ctx.ShouldBind(&req)
@@ -95,7 +95,7 @@ func (h authHandler) Login(ctx *gin.Context) {
 // @Success		422 {object} response.ErrorResponse "Form validation error"
 // @Success		500 {object} response.ErrorResponse "Internal server error"
 // @Router		/auth/token/refresh [post]
-// @Param		Body body authDomain.RequestCreateRefreshToken true "Register request"
+// @Param		Body body authDomain.RequestToken true "Register request"
 func (h authHandler) CreateRefreshToken(ctx *gin.Context) {
 	credentials := ctx.MustGet("credentials").(*token.Payload)
 	req := authDomain.RequestCreateRefreshToken{
