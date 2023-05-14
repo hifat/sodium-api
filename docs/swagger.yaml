@@ -1,6 +1,4 @@
 definitions:
-  authDomain.RequestCreateRefreshToken:
-    type: object
   authDomain.RequestLogin:
     properties:
       password:
@@ -30,6 +28,13 @@ definitions:
     - password
     - username
     type: object
+  authDomain.RequestToken:
+    properties:
+      refreshToken:
+        type: string
+    required:
+    - refreshToken
+    type: object
   authDomain.ResponseRefreshToken:
     properties:
       accessToken:
@@ -44,18 +49,20 @@ definitions:
       username:
         type: string
     type: object
-  response.ErrorMessageResponse:
+  ernos.Ernos:
     properties:
       attribute: {}
       code:
         type: string
       message:
         type: string
+      status:
+        type: integer
     type: object
   response.ErrorResponse:
     properties:
       error:
-        $ref: '#/definitions/response.ErrorMessageResponse'
+        $ref: '#/definitions/ernos.Ernos'
     type: object
 info:
   contact: {}
@@ -70,7 +77,7 @@ paths:
         name: Body
         required: true
         schema:
-          $ref: '#/definitions/authDomain.RequestCreateRefreshToken'
+          $ref: '#/definitions/authDomain.RequestLogin'
       produces:
       - application/json
       responses:
@@ -90,7 +97,7 @@ paths:
           description: Internal server error
           schema:
             $ref: '#/definitions/response.ErrorResponse'
-      summary: Get Refresh Token
+      summary: Login
       tags:
       - Auth
   /auth/register:
@@ -124,6 +131,39 @@ paths:
           schema:
             $ref: '#/definitions/response.ErrorResponse'
       summary: Register
+      tags:
+      - Auth
+  /auth/token/refresh:
+    post:
+      consumes:
+      - application/json
+      parameters:
+      - description: Register request
+        in: body
+        name: Body
+        required: true
+        schema:
+          $ref: '#/definitions/authDomain.RequestToken'
+      produces:
+      - application/json
+      responses:
+        "200":
+          description: OK
+          schema:
+            $ref: '#/definitions/authDomain.ResponseRefreshToken'
+        "401":
+          description: Username or password is incorect
+          schema:
+            $ref: '#/definitions/response.ErrorResponse'
+        "422":
+          description: Form validation error
+          schema:
+            $ref: '#/definitions/response.ErrorResponse'
+        "500":
+          description: Internal server error
+          schema:
+            $ref: '#/definitions/response.ErrorResponse'
+      summary: Get Refresh Token
       tags:
       - Auth
 swagger: "2.0"

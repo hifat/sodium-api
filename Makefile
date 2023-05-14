@@ -7,3 +7,7 @@ migrate:
 swag:
 	# swag init --parseDependency --parseInternal --output ./docs --generalInfo=./cmd/hifatBlogAPI/main.go
 	swag init --generalInfo=./cmd/hifatBlogAPI/main.go
+
+rung:
+	swag init --generalInfo=./cmd/hifatBlogAPI/main.go
+	go run ./cmd/hifatBlogAPI/main.go
