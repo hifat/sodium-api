@@ -36,6 +36,7 @@ func NotFound(value ...string) error {
 	}
 
 	return Ernos{
+		Status:  http.StatusNotFound,
 		Message: msg,
 		Code:    C.RECORD_NOTFOUND,
 	}
