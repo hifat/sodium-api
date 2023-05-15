@@ -22,6 +22,7 @@ make swag
 - [x] Pretty validate form message
 - [ ] Rate limit
 - [ ] RBCA
+- [ ] Log handler
 
 # Issues
 

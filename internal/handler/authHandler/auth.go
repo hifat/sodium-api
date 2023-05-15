@@ -99,6 +99,7 @@ func (h authHandler) Login(ctx *gin.Context) {
 func (h authHandler) CreateRefreshToken(ctx *gin.Context) {
 	credentials := ctx.MustGet("credentials").(*token.Payload)
 	req := authDomain.RequestCreateRefreshToken{
+		ID:       credentials.ID,
 		UserID:   credentials.UserID,
 		Agent:    ctx.Request.UserAgent(),
 		ClientIP: utype.IP(ctx.ClientIP()),

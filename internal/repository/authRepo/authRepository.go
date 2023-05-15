@@ -88,6 +88,7 @@ func (r authRepository) CreateRefreshToken(req authDomain.RequestCreateRefreshTo
 
 func (r authRepository) GetRefreshTokenByID(refreshTokenID uuid.UUID, res *authDomain.ResponseRefreshTokenClaim) (err error) {
 	return r.db.Model(&gormModel.RefreshToken{}).
-		Where("id = ?", refreshTokenID).
+		Joins("User").
+		Where("refresh_tokens.id = ?", refreshTokenID).
 		First(&res).Error
 }

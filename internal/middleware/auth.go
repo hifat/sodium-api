@@ -28,7 +28,7 @@ func (m authMiddleware) AuthGuard(ctx *gin.Context) {
 
 	payload, err := m.authMiddlewareService.AuthGuard(authHeader)
 	if err != nil {
-		httpResponse.InternalError(ctx, err)
+		httpResponse.Error(ctx, err)
 		return
 	}
 
