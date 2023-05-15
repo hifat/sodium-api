@@ -88,14 +88,21 @@ func (u authService) Logout(ID uuid.UUID) (err error) {
 }
 
 func (u authService) CreateRefreshToken(req authDomain.RequestCreateRefreshToken) (res *authDomain.ResponseRefreshToken, err error) {
-	username, err := u.userRepo.GetFieldsByID(req.UserID, "username")
+	var resRefreshToken authDomain.ResponseRefreshTokenClaim
+	err = u.authRepo.GetRefreshTokenByID(req.ID, &resRefreshToken)
 	if err != nil {
-		return nil, err
+		// TODO reflect check record not found
+		if err.Error() == ernos.M.RECORD_NOTFOUND {
+			return nil, ernos.NotFound("refresh token")
+		}
+
+		log.Println(err.Error())
+		return nil, ernos.InternalServerError()
 	}
 
 	userPayload := token.UserPayload{
 		UserID:   req.UserID,
-		Username: fmt.Sprintf("%v", username),
+		Username: fmt.Sprintf("%v", resRefreshToken.User.Username),
 	}
 
 	accessSecret := os.Getenv(constants.ACCESS_TOKEN_SECRET)

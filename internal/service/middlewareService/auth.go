@@ -1,6 +1,7 @@
 package middlewareService
 
 import (
+	"log"
 	"net/http"
 	"os"
 	"strings"
@@ -45,6 +46,7 @@ func (s authMiddlewareService) AuthGuard(authTokenHeader string) (payload *token
 func (s authMiddlewareService) AuthRefreshGuard(refreshToken string) (payload *token.Payload, err error) {
 	payloadRefresh, err := token.VerifyToken(os.Getenv(constants.REFRESH_TOKEN_SECRET), refreshToken)
 	if err != nil {
+		log.Println(err.Error())
 		return nil, ernos.Unauthorized(ernos.C.BROKEN_TOKEN)
 	}
 
@@ -52,10 +54,17 @@ func (s authMiddlewareService) AuthRefreshGuard(refreshToken string) (payload *t
 	var claim authDomain.ResponseRefreshTokenClaim
 	err = s.authRepo.GetRefreshTokenByID(payloadRefresh.ID, &claim)
 	if err != nil {
-		return nil, err
+		// TODO reflect check record not found
+		if err.Error() == ernos.M.RECORD_NOTFOUND {
+			return nil, ernos.NotFound("refresh token")
+		}
+
+		log.Println(err.Error())
+		return nil, ernos.InternalServerError()
 	}
 
 	if !claim.IsActive {
+		log.Println(err.Error())
 		return nil, ernos.Unauthorized()
 	}
 

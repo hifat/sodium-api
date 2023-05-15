@@ -4,6 +4,7 @@ import (
 	"time"
 
 	"github.com/google/uuid"
+	"github.com/hifat/sodium-api/internal/domain/userDomain"
 	"github.com/hifat/sodium-api/internal/utils/gorm/utype"
 )
 
@@ -70,14 +71,16 @@ type ResponseCreateRefreshToken struct {
 }
 
 type ResponseRefreshTokenClaim struct {
-	ID        uuid.UUID `gorm:"primaryKey; type:uuid; default:uuid_generate_v4()" json:"ID"`
-	Token     string    `gorm:"type:text;unique" json:"token"`
-	Agent     string    `gorm:"type:varchar(100)" json:"agent"`
-	ClientIP  utype.IP  `gorm:"type:text" swaggertype:"string" json:"clientIP"`
-	IsActive  bool      `gorm:"boolean; default:true" json:"isActive"`
-	UserID    uuid.UUID `gorm:"type:uuid" json:"userID"`
+	ID        uuid.UUID `json:"ID"`
+	Token     string    `json:"token"`
+	Agent     string    `json:"agent"`
+	ClientIP  utype.IP  `swaggertype:"string" json:"clientIP"`
+	IsActive  bool      `json:"isActive"`
 	CreatedAt time.Time `json:"createdAt"`
 	UpdatedAt time.Time `json:"updatedAt"`
+
+	UserID uuid.UUID               `json:"userID"`
+	User   userDomain.ResponseUser `json:"user"`
 }
 
 type RequestToken struct {
