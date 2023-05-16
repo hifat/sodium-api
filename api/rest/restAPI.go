@@ -6,6 +6,7 @@ import (
 
 	"github.com/gin-gonic/gin"
 	"github.com/hifat/sodium-api/docs"
+	"github.com/hifat/sodium-api/internal/database"
 	"github.com/hifat/sodium-api/internal/routes"
 	"github.com/hifat/sodium-api/internal/utils/validity"
 
@@ -14,6 +15,14 @@ import (
 )
 
 func API() {
+	/* --------------------------------- Init DB -------------------------------- */
+	orm := database.PostgresDB()
+	db, err := orm.DB()
+	if err != nil {
+		panic(err)
+	}
+	defer db.Close()
+
 	/* ---------------------------- Validator config ---------------------------- */
 
 	validity.Register()
@@ -33,7 +42,8 @@ func API() {
 
 	api := router.Group("/api")
 
-	routes.AuthRoute(api)
+	r := routes.New(orm, api)
+	r.Register()
 
 	router.Run(fmt.Sprintf("%s:%s",
 		os.Getenv("APP_HOST"),
