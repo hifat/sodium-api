@@ -11,7 +11,7 @@ import (
 type AuthService interface {
 	Register(req RequestRegister, res *ResponseRegister) (err error)
 	Login(req RequestLogin, res *ResponseRefreshToken) (err error)
-	Logout(ID uuid.UUID) (err error)
+	Logout(refreshTokenID uuid.UUID) (err error)
 	CreateRefreshToken(req RequestCreateRefreshToken) (res *ResponseRefreshToken, err error)
 }
 
@@ -19,7 +19,7 @@ type AuthRepository interface {
 	CheckUserExists(col, value string, exceptID *any) (exists bool, err error)
 	Register(req RequestRegister, res *ResponseRegister) (err error)
 	Login(req RequestLogin, res *ResponseRefreshTokenRepo) (err error)
-	Logout(ID uuid.UUID) (err error)
+	Logout(refreshTokenID uuid.UUID) (err error)
 	CreateRefreshToken(req RequestCreateRefreshToken) (res *ResponseCreateRefreshToken, err error)
 	GetRefreshTokenByID(refreshTokenID uuid.UUID, res *ResponseRefreshTokenClaim) (err error)
 }
