@@ -1,8 +1,14 @@
 package rest
 
 import (
+	"context"
 	"fmt"
+	"log"
+	"net/http"
 	"os"
+	"os/signal"
+	"syscall"
+	"time"
 
 	"github.com/gin-gonic/gin"
 	"github.com/hifat/sodium-api/docs"
@@ -21,6 +27,16 @@ func API() {
 	if err != nil {
 		panic(err)
 	}
+	defer func() {
+		err = db.Ping()
+		if err != nil {
+			// The database connection is closed
+			fmt.Println("The database connection is closed.")
+		} else {
+			// The database connection is still open
+			fmt.Println("The database connection is open.")
+		}
+	}()
 	defer db.Close()
 
 	/* ---------------------------- Validator config ---------------------------- */
@@ -45,8 +61,31 @@ func API() {
 	r := routes.New(orm, api)
 	r.Register()
 
-	router.Run(fmt.Sprintf("%s:%s",
-		os.Getenv("APP_HOST"),
-		os.Getenv("APP_PORT"),
-	))
+	ctx, stop := signal.NotifyContext(context.Background(), syscall.SIGINT, syscall.SIGTERM)
+	defer stop()
+
+	srv := &http.Server{
+		Addr:           os.Getenv("APP_HOST") + ":" + os.Getenv("PORT"),
+		Handler:        router,
+		ReadTimeout:    10 * time.Second,
+		WriteTimeout:   10 * time.Second,
+		MaxHeaderBytes: 1 << 20,
+	}
+
+	go func() {
+		if err := srv.ListenAndServe(); err != nil && err != http.ErrServerClosed {
+			log.Fatalf("listen: %s\n", err)
+		}
+	}()
+
+	<-ctx.Done()
+	stop()
+	fmt.Println("shutting down gracefully, press Ctrl+C again to force")
+
+	timeoutCtx, cancel := context.WithTimeout(context.Background(), 5*time.Second)
+	defer cancel()
+
+	if err := srv.Shutdown(timeoutCtx); err != nil {
+		fmt.Println(err)
+	}
 }
