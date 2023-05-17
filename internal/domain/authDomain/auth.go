@@ -60,6 +60,7 @@ type RequestCreateRefreshToken struct {
 	Agent    string    `json:"agent"`
 	ClientIP utype.IP  `json:"clientIP" swaggertype:"string"`
 	UserID   uuid.UUID `json:"userID"`
+	Username string    `json:"-"`
 }
 
 type ResponseCreateRefreshToken struct {
