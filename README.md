@@ -23,6 +23,7 @@ make swag
 - [ ] Rate limit
 - [ ] RBCA
 - [ ] Log handler
+- [x] Graceful Shutdown
 
 # Issues
 
