@@ -54,8 +54,9 @@ func (r authRepository) Login(req authDomain.RequestLogin, res *authDomain.Respo
 		First(&res).Error
 }
 
-func (r authRepository) Logout(ID uuid.UUID) (err error) {
-	return nil
+func (r authRepository) Logout(refreshTokenID uuid.UUID) (err error) {
+	return r.db.Where("id", refreshTokenID).
+		Delete(&gormModel.RefreshToken{}).Error
 }
 
 type IP net.IP

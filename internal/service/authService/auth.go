@@ -84,8 +84,8 @@ func (u authService) Login(req authDomain.RequestLogin, res *authDomain.Response
 	return nil
 }
 
-func (u authService) Logout(ID uuid.UUID) (err error) {
-	return nil
+func (u authService) Logout(refreshTokenID uuid.UUID) (err error) {
+	return u.authRepo.Logout(refreshTokenID)
 }
 
 func (u authService) CreateRefreshToken(req authDomain.RequestCreateRefreshToken) (res *authDomain.ResponseRefreshToken, err error) {
@@ -108,7 +108,6 @@ func (u authService) CreateRefreshToken(req authDomain.RequestCreateRefreshToken
 		log.Println(err.Error())
 		return nil, ernos.InternalServerError()
 	}
-
 	newRefreshToken := authDomain.RequestCreateRefreshToken{
 		Token:    refreshToken,
 		Agent:    req.Agent,

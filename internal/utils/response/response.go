@@ -13,9 +13,10 @@ type ErrorMessageResponse struct {
 }
 
 type SuccesResponse struct {
-	Item  any `json:"item,omitempty"`
-	Items any `json:"items,omitempty"`
-	Total any `json:"total,omitempty"`
+	Item    any    `json:"item,omitempty"`
+	Items   []any  `json:"items,omitempty"`
+	Total   int    `json:"total,omitempty"`
+	Message string `json:"message,omitempty"`
 }
 
 func HandleErr(err any) ErrorResponse {

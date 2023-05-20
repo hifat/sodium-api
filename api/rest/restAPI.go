@@ -2,7 +2,6 @@ package rest
 
 import (
 	"context"
-	"fmt"
 	"log"
 	"net/http"
 	"os"
@@ -10,6 +9,7 @@ import (
 	"syscall"
 	"time"
 
+	"github.com/gin-contrib/cors"
 	"github.com/gin-gonic/gin"
 	"github.com/hifat/sodium-api/docs"
 	"github.com/hifat/sodium-api/internal/database"
@@ -31,10 +31,10 @@ func API() {
 		err = db.Ping()
 		if err != nil {
 			// The database connection is closed
-			fmt.Println("The database connection is closed.")
+			log.Println("The database connection is closed.")
 		} else {
 			// The database connection is still open
-			fmt.Println("The database connection is open.")
+			log.Println("The database connection is open.")
 		}
 	}()
 	defer db.Close()
@@ -52,7 +52,18 @@ func API() {
 	docs.SwaggerInfo.Schemes = []string{"http", "https"}
 
 	/* --------------------------- Running API server --------------------------- */
+	corsConfig := cors.DefaultConfig()
+	corsConfig.AllowAllOrigins = true
+	corsConfig.AllowHeaders = []string{
+		"Origin",
+		"Content-Length",
+		"Content-Type",
+		"Authorization",
+	}
+
 	router := gin.Default()
+
+	router.Use(cors.New(corsConfig))
 
 	router.GET("/swagger/*any", ginSwagger.WrapHandler(swaggerFiles.Handler))
 
@@ -80,12 +91,12 @@ func API() {
 
 	<-ctx.Done()
 	stop()
-	fmt.Println("shutting down gracefully, press Ctrl+C again to force")
+	log.Println("shutting down gracefully, press Ctrl+C again to force")
 
 	timeoutCtx, cancel := context.WithTimeout(context.Background(), 5*time.Second)
 	defer cancel()
 
 	if err := srv.Shutdown(timeoutCtx); err != nil {
-		fmt.Println(err)
+		log.Println(err)
 	}
 }
