@@ -5,7 +5,6 @@ import (
 
 	"github.com/google/uuid"
 	"github.com/hifat/sodium-api/internal/utils/gorm/utype"
-	"gorm.io/gorm"
 )
 
 type RefreshToken struct {
@@ -18,7 +17,6 @@ type RefreshToken struct {
 	UserID uuid.UUID `gorm:"type:uuid" json:"userID"`
 	User   User      `json:"user"`
 
-	CreatedAt time.Time      `json:"createdAt"`
-	UpdatedAt time.Time      `json:"updatedAt"`
-	DeletedAt gorm.DeletedAt `gorm:"index" json:"-"`
+	CreatedAt time.Time `json:"createdAt"`
+	UpdatedAt time.Time `json:"updatedAt"`
 }
