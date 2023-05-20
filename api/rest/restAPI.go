@@ -65,7 +65,7 @@ func API() {
 	defer stop()
 
 	srv := &http.Server{
-		Addr:           os.Getenv("APP_HOST") + ":" + os.Getenv("PORT"),
+		Addr:           os.Getenv("APP_HOST") + ":" + os.Getenv("APP_PORT"),
 		Handler:        router,
 		ReadTimeout:    10 * time.Second,
 		WriteTimeout:   10 * time.Second,
