@@ -24,6 +24,7 @@ func (r routes) authRoute() {
 	{
 		authRoute.POST("/register", newAuthHandler.Register)
 		authRoute.POST("/login", newAuthHandler.Login)
-		authRoute.POST("/token/refresh", newAuthMiddleware.AuthRefreshGuard, newAuthHandler.CreateRefreshToken)
+		authRoute.POST("/logout", newAuthMiddleware.AuthGuard(), newAuthHandler.Logout)
+		authRoute.POST("/token/refresh", newAuthMiddleware.AuthRefreshGuard(), newAuthHandler.CreateRefreshToken)
 	}
 }

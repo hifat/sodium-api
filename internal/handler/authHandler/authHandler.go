@@ -1,8 +1,6 @@
 package authHandler
 
 import (
-	"fmt"
-
 	"github.com/gin-gonic/gin"
 	"github.com/hifat/sodium-api/internal/domain/authDomain"
 	"github.com/hifat/sodium-api/internal/handler/httpResponse"
@@ -31,9 +29,6 @@ func NewAuthHandler(authService authDomain.AuthService) *authHandler {
 // @Router		/auth/register [post]
 // @Param		Body body authDomain.RequestRegister true "Register request"
 func (h authHandler) Register(ctx *gin.Context) {
-	fmt.Println(ctx.Request.UserAgent())
-	fmt.Println(ctx.ClientIP())
-
 	var req authDomain.RequestRegister
 	err := ctx.ShouldBind(&req)
 	if err != nil {
@@ -83,6 +78,27 @@ func (h authHandler) Login(ctx *gin.Context) {
 
 	httpResponse.Success(ctx, response.SuccesResponse{
 		Item: res,
+	})
+}
+
+// @Summary		Logout
+// @Tags		Auth
+// @Accept		json
+// @Produce		json
+// @Success		200 {object} authDomain.ResponseRefreshToken
+// @Success		401 {object} response.ErrorResponse "Unauthorized"
+// @Success		500 {object} response.ErrorResponse "Internal server error"
+// @Router		/auth/logout [post]
+func (h authHandler) Logout(ctx *gin.Context) {
+	credentials := ctx.MustGet("credentials").(*token.Payload)
+	err := h.authService.Logout(credentials.ID)
+	if err != nil {
+		httpResponse.Error(ctx, err)
+		return
+	}
+
+	httpResponse.Success(ctx, response.SuccesResponse{
+		Message: "logged out",
 	})
 }
 
