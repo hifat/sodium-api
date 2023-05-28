@@ -85,7 +85,7 @@ func (h authHandler) Login(ctx *gin.Context) {
 // @Tags		Auth
 // @Accept		json
 // @Produce		json
-// @Success		200 {object} authDomain.ResponseRefreshToken
+// @Success		200 {object} response.SuccesResponse
 // @Success		401 {object} response.ErrorResponse "Unauthorized"
 // @Success		500 {object} response.ErrorResponse "Internal server error"
 // @Router		/auth/logout [post]
