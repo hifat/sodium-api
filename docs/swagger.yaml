@@ -64,6 +64,17 @@ definitions:
       error:
         $ref: '#/definitions/ernos.Ernos'
     type: object
+  response.SuccesResponse:
+    properties:
+      item: {}
+      items:
+        items: {}
+        type: array
+      message:
+        type: string
+      total:
+        type: integer
+    type: object
 info:
   contact: {}
 paths:
@@ -98,6 +109,28 @@ paths:
           schema:
             $ref: '#/definitions/response.ErrorResponse'
       summary: Login
+      tags:
+      - Auth
+  /auth/logout:
+    post:
+      consumes:
+      - application/json
+      produces:
+      - application/json
+      responses:
+        "200":
+          description: OK
+          schema:
+            $ref: '#/definitions/response.SuccesResponse'
+        "401":
+          description: Unauthorized
+          schema:
+            $ref: '#/definitions/response.ErrorResponse'
+        "500":
+          description: Internal server error
+          schema:
+            $ref: '#/definitions/response.ErrorResponse'
+      summary: Logout
       tags:
       - Auth
   /auth/register:
