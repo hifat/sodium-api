@@ -31,7 +31,7 @@ func (s authMiddlewareService) AuthGuard(authTokenHeader string) (payload *token
 		})
 	}
 
-	payload, err = token.VerifyToken(os.Getenv(constants.REFRESH_TOKEN_SECRET), accessToken)
+	payload, err = token.VerifyToken(os.Getenv(constants.ACCESS_TOKEN_SECRET), accessToken)
 	if err != nil {
 		return nil, ernos.Other(ernos.Ernos{
 			Status:  http.StatusUnauthorized,

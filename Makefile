@@ -1,13 +1,13 @@
 run:
-	go run ./cmd/hifatBlogAPI/main.go
+	go run ./cmd/api
 
 migrate:
-	go run ./cmd/migration/main.go
+	go run ./cmd/migration
 
 swag:
-	# swag init --parseDependency --parseInternal --output ./docs --generalInfo=./cmd/hifatBlogAPI/main.go
-	swag init --generalInfo=./cmd/hifatBlogAPI/main.go
+	# swag init --parseDependency --parseInternal --output ./docs --generalInfo=./cmd/api
+	swag init --generalInfo=./cmd/api
 
 rung:
-	swag init --generalInfo=./cmd/hifatBlogAPI/main.go
-	go run ./cmd/hifatBlogAPI/main.go
+	swag init --generalInfo=./cmd/api
+	go run ./cmd/api
