@@ -1,4 +1,4 @@
-package rest
+package main
 
 import (
 	"context"
@@ -15,12 +15,19 @@ import (
 	"github.com/hifat/sodium-api/internal/database"
 	"github.com/hifat/sodium-api/internal/routes"
 	"github.com/hifat/sodium-api/internal/utils/validity"
+	_ "github.com/joho/godotenv/autoload"
 
 	swaggerFiles "github.com/swaggo/files"
 	ginSwagger "github.com/swaggo/gin-swagger"
 )
 
-func API() {
+func init() {
+	if os.Getenv("APP_MODE") == "production" {
+		gin.SetMode(gin.ReleaseMode)
+	}
+}
+
+func main() {
 	/* --------------------------------- Init DB -------------------------------- */
 	orm := database.PostgresDB()
 	db, err := orm.DB()
@@ -40,7 +47,6 @@ func API() {
 	defer db.Close()
 
 	/* ---------------------------- Validator config ---------------------------- */
-
 	validity.Register()
 
 	/* ------------------------------- Swag config ------------------------------ */
