@@ -2,6 +2,7 @@ package authHandler
 
 import (
 	"github.com/gin-gonic/gin"
+	"github.com/google/wire"
 	"github.com/hifat/sodium-api/internal/domain/authDomain"
 	"github.com/hifat/sodium-api/internal/handler/httpResponse"
 	"github.com/hifat/sodium-api/internal/utils/gorm/utype"
@@ -10,12 +11,14 @@ import (
 	"github.com/hifat/sodium-api/internal/utils/validity"
 )
 
-type authHandler struct {
+var AuthHandlerSet = wire.NewSet(NewAuthHandler)
+
+type AuthHandler struct {
 	authService authDomain.AuthService
 }
 
-func NewAuthHandler(authService authDomain.AuthService) *authHandler {
-	return &authHandler{authService}
+func NewAuthHandler(authService authDomain.AuthService) AuthHandler {
+	return AuthHandler{authService}
 }
 
 // @Summary		Register
@@ -28,7 +31,7 @@ func NewAuthHandler(authService authDomain.AuthService) *authHandler {
 // @Success		500 {object} response.ErrorResponse "Internal server error"
 // @Router		/auth/register [post]
 // @Param		Body body authDomain.RequestRegister true "Register request"
-func (h authHandler) Register(ctx *gin.Context) {
+func (h AuthHandler) Register(ctx *gin.Context) {
 	var req authDomain.RequestRegister
 	err := ctx.ShouldBind(&req)
 	if err != nil {
@@ -58,7 +61,7 @@ func (h authHandler) Register(ctx *gin.Context) {
 // @Success		500 {object} response.ErrorResponse "Internal server error"
 // @Router		/auth/login [post]
 // @Param		Body body authDomain.RequestLogin true "Register request"
-func (h authHandler) Login(ctx *gin.Context) {
+func (h AuthHandler) Login(ctx *gin.Context) {
 	var req authDomain.RequestLogin
 	err := ctx.ShouldBind(&req)
 	if err != nil {
@@ -89,7 +92,7 @@ func (h authHandler) Login(ctx *gin.Context) {
 // @Success		401 {object} response.ErrorResponse "Unauthorized"
 // @Success		500 {object} response.ErrorResponse "Internal server error"
 // @Router		/auth/logout [post]
-func (h authHandler) Logout(ctx *gin.Context) {
+func (h AuthHandler) Logout(ctx *gin.Context) {
 	credentials := ctx.MustGet("credentials").(*token.Payload)
 	err := h.authService.Logout(credentials.ID)
 	if err != nil {
@@ -112,7 +115,7 @@ func (h authHandler) Logout(ctx *gin.Context) {
 // @Success		500 {object} response.ErrorResponse "Internal server error"
 // @Router		/auth/token/refresh [post]
 // @Param		Body body authDomain.RequestToken true "Register request"
-func (h authHandler) CreateRefreshToken(ctx *gin.Context) {
+func (h AuthHandler) CreateRefreshToken(ctx *gin.Context) {
 	credentials := ctx.MustGet("credentials").(*token.Payload)
 	req := authDomain.RequestCreateRefreshToken{
 		ID:       credentials.ID,

@@ -12,7 +12,7 @@ import (
 	"github.com/gin-contrib/cors"
 	"github.com/gin-gonic/gin"
 	"github.com/hifat/sodium-api/docs"
-	"github.com/hifat/sodium-api/internal/database"
+	"github.com/hifat/sodium-api/internal/di"
 	"github.com/hifat/sodium-api/internal/routes"
 	"github.com/hifat/sodium-api/internal/utils/validity"
 	_ "github.com/joho/godotenv/autoload"
@@ -29,22 +29,8 @@ func init() {
 
 func main() {
 	/* --------------------------------- Init DB -------------------------------- */
-	orm := database.PostgresDB()
-	db, err := orm.DB()
-	if err != nil {
-		panic(err)
-	}
-	defer func() {
-		err = db.Ping()
-		if err != nil {
-			// The database connection is closed
-			log.Println("The database connection is closed.")
-		} else {
-			// The database connection is still open
-			log.Println("The database connection is open.")
-		}
-	}()
-	defer db.Close()
+	handlerWire, cleanup := di.InitializeAPI()
+	defer cleanup()
 
 	/* ---------------------------- Validator config ---------------------------- */
 	validity.Register()
@@ -70,12 +56,13 @@ func main() {
 	router := gin.Default()
 
 	router.Use(cors.New(corsConfig))
+	router.Use(gin.Recovery())
 
 	router.GET("/swagger/*any", ginSwagger.WrapHandler(swaggerFiles.Handler))
 
 	api := router.Group("/api")
 
-	r := routes.New(orm, api)
+	r := routes.New(api, handlerWire)
 	r.Register()
 
 	ctx, stop := signal.NotifyContext(context.Background(), syscall.SIGINT, syscall.SIGTERM)
