@@ -66,13 +66,7 @@ func (u authService) Login(req authDomain.RequestLogin, res *authDomain.Response
 		return err
 	}
 
-	refreshTokeID, err := uuid.NewUUID()
-	if err != nil {
-		return err
-	}
-
 	newRefreshToken := authDomain.RequestCreateRefreshToken{
-		ID:       refreshTokeID,
 		Agent:    req.Agent,
 		ClientIP: req.ClientIP,
 		UserID:   user.ID,
