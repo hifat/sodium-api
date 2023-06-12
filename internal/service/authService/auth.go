@@ -8,6 +8,7 @@ import (
 	"time"
 
 	"github.com/google/uuid"
+	"github.com/google/wire"
 	"github.com/hifat/sodium-api/internal/constants"
 	"github.com/hifat/sodium-api/internal/domain/authDomain"
 	"github.com/hifat/sodium-api/internal/domain/userDomain"
@@ -15,6 +16,8 @@ import (
 	"github.com/hifat/sodium-api/internal/utils/ernos"
 	"github.com/hifat/sodium-api/internal/utils/token"
 )
+
+var AuthServiceSet = wire.NewSet(NewAuthService)
 
 type authService struct {
 	authRepo authDomain.AuthRepository

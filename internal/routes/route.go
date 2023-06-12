@@ -2,19 +2,22 @@ package routes
 
 import (
 	"github.com/gin-gonic/gin"
+	"github.com/hifat/sodium-api/internal/handler"
+	"github.com/hifat/sodium-api/internal/middleware"
 	_ "github.com/joho/godotenv/autoload"
-	"gorm.io/gorm"
 )
 
 type routes struct {
-	orm    *gorm.DB
-	router *gin.RouterGroup
+	router     *gin.RouterGroup
+	handler    handler.Handler
+	middleware middleware.Middleware
 }
 
-func New(orm *gorm.DB, router *gin.RouterGroup) *routes {
+func New(router *gin.RouterGroup, handler handler.Handler, middleware middleware.Middleware) *routes {
 	return &routes{
-		orm,
 		router,
+		handler,
+		middleware,
 	}
 }
 
