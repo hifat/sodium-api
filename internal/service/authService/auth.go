@@ -66,7 +66,13 @@ func (u authService) Login(req authDomain.RequestLogin, res *authDomain.Response
 		return err
 	}
 
+	refreshTokeID, err := uuid.NewUUID()
+	if err != nil {
+		return err
+	}
+
 	newRefreshToken := authDomain.RequestCreateRefreshToken{
+		ID:       refreshTokeID,
 		Agent:    req.Agent,
 		ClientIP: req.ClientIP,
 		UserID:   user.ID,
@@ -106,12 +112,13 @@ func (u authService) CreateRefreshToken(req authDomain.RequestCreateRefreshToken
 
 	expired := time.Now().AddDate(0, 0, 7)
 	refreshSecret := os.Getenv(constants.REFRESH_TOKEN_SECRET)
-	refreshToken, _, err := token.CreateToken(refreshSecret, userPayload, time.Until(expired))
+	refreshToken, refreshPayload, err := token.CreateToken(refreshSecret, userPayload, time.Until(expired))
 	if err != nil {
 		log.Println(err.Error())
 		return nil, ernos.InternalServerError()
 	}
 	newRefreshToken := authDomain.RequestCreateRefreshToken{
+		ID:       refreshPayload.ID,
 		Token:    refreshToken,
 		Agent:    req.Agent,
 		ClientIP: req.ClientIP,
