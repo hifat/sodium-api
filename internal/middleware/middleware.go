@@ -7,7 +7,7 @@ import (
 var MiddlewareSet = wire.NewSet(NewMiddleware)
 
 type Middleware struct {
-	AuthMiddleware AuthMiddleware
+	AuthMiddleware
 }
 
 func NewMiddleware(ah AuthMiddleware) Middleware {

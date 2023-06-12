@@ -16,7 +16,6 @@ import (
 	"github.com/hifat/sodium-api/internal/routes"
 	"github.com/hifat/sodium-api/internal/utils/validity"
 	_ "github.com/joho/godotenv/autoload"
-
 	swaggerFiles "github.com/swaggo/files"
 	ginSwagger "github.com/swaggo/gin-swagger"
 )
@@ -62,7 +61,7 @@ func main() {
 
 	api := router.Group("/api")
 
-	r := routes.New(api, handlerWire)
+	r := routes.New(api, handlerWire.Handler, handlerWire.Middleware)
 	r.Register()
 
 	ctx, stop := signal.NotifyContext(context.Background(), syscall.SIGINT, syscall.SIGTERM)

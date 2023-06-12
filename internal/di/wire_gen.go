@@ -8,8 +8,10 @@ package di
 
 import (
 	"github.com/google/wire"
+	"github.com/hifat/sodium-api/internal/adapter"
 	"github.com/hifat/sodium-api/internal/handler"
 	"github.com/hifat/sodium-api/internal/handler/authHandler"
+	"github.com/hifat/sodium-api/internal/middleware"
 	"github.com/hifat/sodium-api/internal/repository"
 	"github.com/hifat/sodium-api/internal/repository/authRepo"
 	"github.com/hifat/sodium-api/internal/repository/userRepo"
@@ -19,22 +21,30 @@ import (
 
 // Injectors from wire.go:
 
-func InitializeAPI() (handler.Handler, func()) {
+func InitializeAPI() (adapter.Adapter, func()) {
 	db, cleanup := repository.NewGormDB()
 	authRepository := authRepo.NewAuthRepository(db)
+	authMiddlewareService := middlewareService.NewAuthMiddlewareService(authRepository)
+	authMiddleware := middleware.NewAuthMiddleware(authMiddlewareService)
+	middlewareMiddleware := middleware.NewMiddleware(authMiddleware)
 	userRepository := userRepo.NewUserRepository(db)
 	authDomainAuthService := authService.NewAuthService(authRepository, userRepository)
 	authHandlerAuthHandler := authHandler.NewAuthHandler(authDomainAuthService)
 	handlerHandler := handler.NewHandler(authHandlerAuthHandler)
-	return handlerHandler, func() {
+	adapterAdapter := adapter.NewAdapter(middlewareMiddleware, handlerHandler)
+	return adapterAdapter, func() {
 		cleanup()
 	}
 }
 
 // wire.go:
 
-var HandlerSet = wire.NewSet(authHandler.AuthHandlerSet, handler.HandlerSet)
+var AdapterSet = wire.NewSet(adapter.AdapterSet)
+
+var MiddlewareSet = wire.NewSet(middleware.MiddlewareSet, middleware.AuthMiddlewareSet)
+
+var RepoSet = wire.NewSet(repository.GormDBSet, authRepo.AuthRepoSet, userRepo.UserRepoSet)
 
 var ServiceSet = wire.NewSet(authService.AuthServiceSet, middlewareService.AuthMiddlewareServiceSet)
 
-var RepoSet = wire.NewSet(repository.GormDBSet, authRepo.AuthRepoSet, userRepo.UserRepoSet)
+var HandlerSet = wire.NewSet(authHandler.AuthHandlerSet, handler.HandlerSet)
