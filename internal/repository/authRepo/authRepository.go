@@ -2,10 +2,13 @@ package authRepo
 
 import (
 	"github.com/google/uuid"
+	"github.com/google/wire"
 	"github.com/hifat/sodium-api/internal/domain/authDomain"
 	"github.com/hifat/sodium-api/internal/model/gormModel"
 	"gorm.io/gorm"
 )
+
+var AuthRepoSet = wire.NewSet(NewAuthRepository)
 
 type authRepository struct {
 	db *gorm.DB

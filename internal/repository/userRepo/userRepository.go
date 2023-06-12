@@ -2,10 +2,13 @@ package userRepo
 
 import (
 	"github.com/google/uuid"
+	"github.com/google/wire"
 	"github.com/hifat/sodium-api/internal/domain/userDomain"
 	"github.com/hifat/sodium-api/internal/model/gormModel"
 	"gorm.io/gorm"
 )
+
+var UserRepoSet = wire.NewSet(NewUserRepository)
 
 type userRepository struct {
 	db *gorm.DB

@@ -6,12 +6,15 @@ import (
 	"os"
 	"strings"
 
+	"github.com/google/wire"
 	"github.com/hifat/sodium-api/internal/constants"
 	"github.com/hifat/sodium-api/internal/domain/authDomain"
 	"github.com/hifat/sodium-api/internal/domain/middlewareDomain"
 	"github.com/hifat/sodium-api/internal/utils/ernos"
 	"github.com/hifat/sodium-api/internal/utils/token"
 )
+
+var AuthMiddlewareServiceSet = wire.NewSet(NewAuthMiddlewareService)
 
 type authMiddlewareService struct {
 	authRepo authDomain.AuthRepository

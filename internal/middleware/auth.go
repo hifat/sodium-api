@@ -4,6 +4,7 @@ import (
 	"errors"
 
 	"github.com/gin-gonic/gin"
+	"github.com/google/wire"
 	"github.com/hifat/sodium-api/internal/domain/authDomain"
 	"github.com/hifat/sodium-api/internal/domain/middlewareDomain"
 	"github.com/hifat/sodium-api/internal/handler/httpResponse"
@@ -11,15 +12,17 @@ import (
 	"github.com/hifat/sodium-api/internal/utils/validity"
 )
 
-type authMiddleware struct {
+var AuthMiddlewareSet = wire.NewSet(NewAuthMiddleware)
+
+type AuthMiddleware struct {
 	authMiddlewareService middlewareDomain.AuthMiddlewareService
 }
 
-func NewAuthMiddleware(authMiddlewareService middlewareDomain.AuthMiddlewareService) *authMiddleware {
-	return &authMiddleware{authMiddlewareService}
+func NewAuthMiddleware(am middlewareDomain.AuthMiddlewareService) AuthMiddleware {
+	return AuthMiddleware{authMiddlewareService: am}
 }
 
-func (m authMiddleware) AuthGuard() gin.HandlerFunc {
+func (m AuthMiddleware) AuthGuard() gin.HandlerFunc {
 	return func(ctx *gin.Context) {
 		authHeader := ctx.Request.Header.Get("Authorization")
 		if authHeader == "" {
@@ -38,7 +41,7 @@ func (m authMiddleware) AuthGuard() gin.HandlerFunc {
 	}
 }
 
-func (m authMiddleware) AuthRefreshGuard() gin.HandlerFunc {
+func (m AuthMiddleware) AuthRefreshGuard() gin.HandlerFunc {
 	return func(ctx *gin.Context) {
 		var req authDomain.RequestToken
 		err := ctx.ShouldBind(&req)
