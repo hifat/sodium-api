@@ -1,6 +1,7 @@
 package authService
 
 import (
+	"context"
 	"fmt"
 	"log"
 	"net/http"
@@ -31,8 +32,8 @@ func NewAuthService(authRepo authDomain.AuthRepository, userRepo userDomain.User
 	}
 }
 
-func (u authService) Register(req authDomain.RequestRegister, res *authDomain.ResponseRegister) (err error) {
-	exists, err := u.authRepo.CheckUserExists("username", req.Username, nil)
+func (u authService) Register(ctx context.Context, req authDomain.RequestRegister, res *authDomain.ResponseRegister) (err error) {
+	exists, err := u.authRepo.CheckUserExists(ctx, "username", req.Username, nil)
 	if err != nil {
 		log.Println(err)
 		return ernos.InternalServerError()
@@ -48,12 +49,12 @@ func (u authService) Register(req authDomain.RequestRegister, res *authDomain.Re
 		return ernos.InternalServerError()
 	}
 
-	return u.authRepo.Register(req, res)
+	return u.authRepo.Register(ctx, req, res)
 }
 
-func (u authService) Login(req authDomain.RequestLogin, res *authDomain.ResponseRefreshToken) (err error) {
+func (u authService) Login(ctx context.Context, req authDomain.RequestLogin, res *authDomain.ResponseRefreshToken) (err error) {
 	var user authDomain.ResponseRefreshTokenRepo
-	err = u.authRepo.Login(req, &user)
+	err = u.authRepo.Login(ctx, req, &user)
 	if err != nil {
 		if err.Error() == ernos.M.RECORD_NOTFOUND {
 			return ernos.Other(ernos.Ernos{
@@ -73,7 +74,7 @@ func (u authService) Login(req authDomain.RequestLogin, res *authDomain.Response
 		Username: user.Username,
 	}
 
-	newToken, err := u.CreateRefreshToken(newRefreshToken)
+	newToken, err := u.CreateRefreshToken(ctx, newRefreshToken)
 	if err != nil {
 		log.Println(err.Error())
 		return ernos.InternalServerError()
@@ -87,11 +88,11 @@ func (u authService) Login(req authDomain.RequestLogin, res *authDomain.Response
 	return nil
 }
 
-func (u authService) Logout(refreshTokenID uuid.UUID) (err error) {
-	return u.authRepo.Logout(refreshTokenID)
+func (u authService) Logout(ctx context.Context, refreshTokenID uuid.UUID) (err error) {
+	return u.authRepo.Logout(ctx, refreshTokenID)
 }
 
-func (u authService) CreateRefreshToken(req authDomain.RequestCreateRefreshToken) (res *authDomain.ResponseRefreshToken, err error) {
+func (u authService) CreateRefreshToken(ctx context.Context, req authDomain.RequestCreateRefreshToken) (res *authDomain.ResponseRefreshToken, err error) {
 	userPayload := token.UserPayload{
 		UserID:   req.UserID,
 		Username: fmt.Sprintf("%v", req.Username),
@@ -119,7 +120,7 @@ func (u authService) CreateRefreshToken(req authDomain.RequestCreateRefreshToken
 		UserID:   req.UserID,
 	}
 
-	_, err = u.authRepo.CreateRefreshToken(newRefreshToken)
+	_, err = u.authRepo.CreateRefreshToken(ctx, newRefreshToken)
 	if err != nil {
 		log.Println(err.Error())
 		return nil, ernos.InternalServerError()

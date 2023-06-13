@@ -1,6 +1,7 @@
 package middlewareService
 
 import (
+	"context"
 	"log"
 	"net/http"
 	"os"
@@ -24,7 +25,7 @@ func NewAuthMiddlewareService(authRepo authDomain.AuthRepository) middlewareDoma
 	return &authMiddlewareService{authRepo}
 }
 
-func (s authMiddlewareService) AuthGuard(authTokenHeader string) (payload *token.Payload, err error) {
+func (s authMiddlewareService) AuthGuard(ctx context.Context, authTokenHeader string) (payload *token.Payload, err error) {
 	accessToken := strings.TrimPrefix(authTokenHeader, "Bearer ")
 	if accessToken == authTokenHeader {
 		return nil, ernos.Other(ernos.Ernos{
@@ -46,7 +47,7 @@ func (s authMiddlewareService) AuthGuard(authTokenHeader string) (payload *token
 	return payload, nil
 }
 
-func (s authMiddlewareService) AuthRefreshGuard(refreshToken string) (payload *token.Payload, err error) {
+func (s authMiddlewareService) AuthRefreshGuard(ctx context.Context, refreshToken string) (payload *token.Payload, err error) {
 	payloadRefresh, err := token.VerifyToken(os.Getenv(constants.REFRESH_TOKEN_SECRET), refreshToken)
 	if err != nil {
 		log.Println(err.Error())
@@ -55,7 +56,7 @@ func (s authMiddlewareService) AuthRefreshGuard(refreshToken string) (payload *t
 
 	// Check if the refresh token is active.
 	var claim authDomain.ResponseRefreshTokenClaim
-	err = s.authRepo.GetRefreshTokenByID(payloadRefresh.ID, &claim)
+	err = s.authRepo.GetRefreshTokenByID(ctx, payloadRefresh.ID, &claim)
 	if err != nil {
 		// TODO reflect check record not found
 		if err.Error() == ernos.M.RECORD_NOTFOUND {

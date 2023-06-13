@@ -40,7 +40,7 @@ func (h AuthHandler) Register(ctx *gin.Context) {
 	}
 
 	var res authDomain.ResponseRegister
-	err = h.authService.Register(req, &res)
+	err = h.authService.Register(ctx, req, &res)
 	if err != nil {
 		httpResponse.Error(ctx, err)
 		return
@@ -73,7 +73,7 @@ func (h AuthHandler) Login(ctx *gin.Context) {
 	req.ClientIP = utype.IP(ctx.ClientIP())
 
 	res := authDomain.ResponseRefreshToken{}
-	err = h.authService.Login(req, &res)
+	err = h.authService.Login(ctx, req, &res)
 	if err != nil {
 		httpResponse.Error(ctx, err)
 		return
@@ -94,7 +94,7 @@ func (h AuthHandler) Login(ctx *gin.Context) {
 // @Router		/auth/logout [post]
 func (h AuthHandler) Logout(ctx *gin.Context) {
 	credentials := ctx.MustGet("credentials").(*token.Payload)
-	err := h.authService.Logout(credentials.ID)
+	err := h.authService.Logout(ctx, credentials.ID)
 	if err != nil {
 		httpResponse.Error(ctx, err)
 		return
@@ -124,7 +124,7 @@ func (h AuthHandler) CreateRefreshToken(ctx *gin.Context) {
 		ClientIP: utype.IP(ctx.ClientIP()),
 	}
 
-	res, err := h.authService.CreateRefreshToken(req)
+	res, err := h.authService.CreateRefreshToken(ctx, req)
 	if err != nil {
 		httpResponse.Error(ctx, err)
 		return
