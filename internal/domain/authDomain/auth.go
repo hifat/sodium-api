@@ -1,6 +1,7 @@
 package authDomain
 
 import (
+	"context"
 	"time"
 
 	"github.com/google/uuid"
@@ -9,19 +10,19 @@ import (
 )
 
 type AuthService interface {
-	Register(req RequestRegister, res *ResponseRegister) (err error)
-	Login(req RequestLogin, res *ResponseRefreshToken) (err error)
-	Logout(refreshTokenID uuid.UUID) (err error)
-	CreateRefreshToken(req RequestCreateRefreshToken) (res *ResponseRefreshToken, err error)
+	Register(ctx context.Context, req RequestRegister, res *ResponseRegister) (err error)
+	Login(ctx context.Context, req RequestLogin, res *ResponseRefreshToken) (err error)
+	Logout(ctx context.Context, refreshTokenID uuid.UUID) (err error)
+	CreateRefreshToken(ctx context.Context, req RequestCreateRefreshToken) (res *ResponseRefreshToken, err error)
 }
 
 type AuthRepository interface {
-	CheckUserExists(col, value string, exceptID *any) (exists bool, err error)
-	Register(req RequestRegister, res *ResponseRegister) (err error)
-	Login(req RequestLogin, res *ResponseRefreshTokenRepo) (err error)
-	Logout(refreshTokenID uuid.UUID) (err error)
-	CreateRefreshToken(req RequestCreateRefreshToken) (res *ResponseCreateRefreshToken, err error)
-	GetRefreshTokenByID(refreshTokenID uuid.UUID, res *ResponseRefreshTokenClaim) (err error)
+	CheckUserExists(ctx context.Context, col, value string, exceptID *any) (exists bool, err error)
+	Register(ctx context.Context, req RequestRegister, res *ResponseRegister) (err error)
+	Login(ctx context.Context, req RequestLogin, res *ResponseRefreshTokenRepo) (err error)
+	Logout(ctx context.Context, refreshTokenID uuid.UUID) (err error)
+	CreateRefreshToken(ctx context.Context, req RequestCreateRefreshToken) (res *ResponseCreateRefreshToken, err error)
+	GetRefreshTokenByID(ctx context.Context, refreshTokenID uuid.UUID, res *ResponseRefreshTokenClaim) (err error)
 }
 
 type RequestRegister struct {

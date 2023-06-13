@@ -1,9 +1,13 @@
 package userDomain
 
-import "github.com/google/uuid"
+import (
+	"context"
+
+	"github.com/google/uuid"
+)
 
 type UserRepository interface {
-	GetFieldsByID(ID uuid.UUID, field string) (value interface{}, err error)
+	GetFieldsByID(ctx context.Context, ID uuid.UUID, field string) (value interface{}, err error)
 }
 
 type ResponseUser struct {

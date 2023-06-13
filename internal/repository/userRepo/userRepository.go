@@ -1,6 +1,8 @@
 package userRepo
 
 import (
+	"context"
+
 	"github.com/google/uuid"
 	"github.com/google/wire"
 	"github.com/hifat/sodium-api/internal/domain/userDomain"
@@ -18,7 +20,7 @@ func NewUserRepository(db *gorm.DB) userDomain.UserRepository {
 	return &userRepository{db}
 }
 
-func (r userRepository) GetFieldsByID(ID uuid.UUID, field string) (value interface{}, err error) {
+func (r userRepository) GetFieldsByID(ctx context.Context, ID uuid.UUID, field string) (value interface{}, err error) {
 	var fields []interface{}
 	return fields[0], r.db.Model(&gormModel.User{}).
 		Select(field).

@@ -30,7 +30,7 @@ func (m AuthMiddleware) AuthGuard() gin.HandlerFunc {
 			return
 		}
 
-		payload, err := m.authMiddlewareService.AuthGuard(authHeader)
+		payload, err := m.authMiddlewareService.AuthGuard(ctx, authHeader)
 		if err != nil {
 			httpResponse.Error(ctx, err)
 			return
@@ -50,7 +50,7 @@ func (m AuthMiddleware) AuthRefreshGuard() gin.HandlerFunc {
 			return
 		}
 
-		payload, err := m.authMiddlewareService.AuthRefreshGuard(req.RefreshToken)
+		payload, err := m.authMiddlewareService.AuthRefreshGuard(ctx, req.RefreshToken)
 		if err != nil {
 			httpResponse.Error(ctx, err)
 			return
