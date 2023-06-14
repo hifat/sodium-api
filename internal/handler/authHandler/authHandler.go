@@ -39,7 +39,7 @@ func (h AuthHandler) Register(ctx *gin.Context) {
 		return
 	}
 
-	var res authDomain.ResponseRegister
+	res := authDomain.ResponseRegister{}
 	err = h.authService.Register(ctx, req, &res)
 	if err != nil {
 		httpResponse.Error(ctx, err)
