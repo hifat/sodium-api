@@ -7,6 +7,7 @@ import (
 	"github.com/google/wire"
 	"github.com/hifat/sodium-api/internal/domain/authDomain"
 	"github.com/hifat/sodium-api/internal/model/gormModel"
+	"github.com/hifat/sodium-api/internal/utils/utime"
 	"gorm.io/gorm"
 )
 
@@ -36,9 +37,11 @@ func (r authRepository) CheckUserExists(ctx context.Context, col, value string, 
 
 func (r authRepository) Register(ctx context.Context, req authDomain.RequestRegister, res *authDomain.ResponseRegister) (err error) {
 	newUser := gormModel.User{
-		Username: req.Username,
-		Password: req.Password,
-		Name:     req.Name,
+		Username:  req.Username,
+		Password:  req.Password,
+		Name:      req.Name,
+		CreatedAt: utime.Now(),
+		UpdatedAt: utime.Now(),
 	}
 
 	err = r.db.Create(&newUser).Error
