@@ -116,21 +116,6 @@ func (m *MockAuthRepository) EXPECT() *MockAuthRepositoryMockRecorder {
 	return m.recorder
 }
 
-// CheckUserExists mocks base method.
-func (m *MockAuthRepository) CheckUserExists(ctx context.Context, col, value string, exceptID *any) (bool, error) {
-	m.ctrl.T.Helper()
-	ret := m.ctrl.Call(m, "CheckUserExists", ctx, col, value, exceptID)
-	ret0, _ := ret[0].(bool)
-	ret1, _ := ret[1].(error)
-	return ret0, ret1
-}
-
-// CheckUserExists indicates an expected call of CheckUserExists.
-func (mr *MockAuthRepositoryMockRecorder) CheckUserExists(ctx, col, value, exceptID interface{}) *gomock.Call {
-	mr.mock.ctrl.T.Helper()
-	return mr.mock.ctrl.RecordCallWithMethodType(mr.mock, "CheckUserExists", reflect.TypeOf((*MockAuthRepository)(nil).CheckUserExists), ctx, col, value, exceptID)
-}
-
 // CreateRefreshToken mocks base method.
 func (m *MockAuthRepository) CreateRefreshToken(ctx context.Context, req authDomain.RequestCreateRefreshToken) (*authDomain.ResponseCreateRefreshToken, error) {
 	m.ctrl.T.Helper()

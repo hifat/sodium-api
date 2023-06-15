@@ -18,7 +18,6 @@ type AuthService interface {
 
 //go:generate mockgen -source=./auth.go -destination=../../repository/authRepo/mockAuthRepo/mockAuthRepo.go -package=mockAuthRepo
 type AuthRepository interface {
-	CheckUserExists(ctx context.Context, col, value string, exceptID *any) (exists bool, err error)
 	Register(ctx context.Context, req RequestRegister, res *ResponseRegister) (err error)
 	Login(ctx context.Context, req RequestLogin, res *ResponseRefreshTokenRepo) (err error)
 	Logout(ctx context.Context, refreshTokenID uuid.UUID) (err error)
