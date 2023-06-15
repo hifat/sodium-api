@@ -4,7 +4,7 @@ import (
 	"errors"
 	"time"
 
-	"github.com/dgrijalva/jwt-go"
+	"github.com/golang-jwt/jwt"
 )
 
 func CreateToken(secretKey string, userPayload UserPayload, duration time.Duration) (token string, payload *Payload, err error) {
