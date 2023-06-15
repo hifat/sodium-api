@@ -63,7 +63,7 @@ func (s *testAuthRepoSuite) TearDownSuite() {
 
 func (u *testAuthRepoSuite) TestAuthRepo_Register() {
 	u.Run("success - register", func() {
-		var ctx = context.Background()
+		ctx := context.Background()
 
 		req := authDomain.RequestRegister{
 			Username: "sodium",
@@ -87,7 +87,8 @@ func (u *testAuthRepoSuite) TestAuthRepo_Register() {
 		u.mock.ExpectQuery(
 			regexp.QuoteMeta(`SELECT "users"."username","users"."name" FROM "users" WHERE id = $1 AND "users"."deleted_at" IS NULL ORDER BY "users"."id" LIMIT 1`)).
 			WithArgs(sqlmock.AnyArg()).
-			WillReturnRows(sqlmock.NewRows([]string{"username", "name"}).AddRow("sodium", "Sodiumy"))
+			WillReturnRows(sqlmock.NewRows([]string{"username", "name"}).
+				AddRow("sodium", "Sodiumy"))
 
 		res := authDomain.ResponseRegister{}
 		err := u.authRepo.Register(ctx, req, &res)

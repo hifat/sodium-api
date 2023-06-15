@@ -21,20 +21,6 @@ func NewAuthRepository(db *gorm.DB) authDomain.AuthRepository {
 	return &authRepository{db}
 }
 
-func (r authRepository) CheckUserExists(ctx context.Context, col, value string, exceptID *any) (exists bool, err error) {
-	tx := r.db.Model(&gormModel.User{}).
-		Select(`COUNT(*) > 0`).
-		Where("username = ?", value)
-
-	if exceptID != nil {
-		tx.Where("id = ?", exceptID)
-	}
-
-	err = tx.Find(&exists).Error
-
-	return exists, err
-}
-
 func (r authRepository) Register(ctx context.Context, req authDomain.RequestRegister, res *authDomain.ResponseRegister) (err error) {
 	newUser := gormModel.User{
 		Username:  req.Username,

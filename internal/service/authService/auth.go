@@ -33,7 +33,7 @@ func NewAuthService(authRepo authDomain.AuthRepository, userRepo userDomain.User
 }
 
 func (u authService) Register(ctx context.Context, req authDomain.RequestRegister, res *authDomain.ResponseRegister) (err error) {
-	exists, err := u.authRepo.CheckUserExists(ctx, "username", req.Username, nil)
+	exists, err := u.userRepo.CheckExists(ctx, "username", req.Username)
 	if err != nil {
 		log.Println(err)
 		return ernos.InternalServerError()
