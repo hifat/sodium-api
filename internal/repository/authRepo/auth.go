@@ -68,3 +68,10 @@ func (r authRepository) GetRefreshTokenByID(ctx context.Context, refreshTokenID 
 		Where("refresh_tokens.id = ?", refreshTokenID).
 		First(&res).Error
 }
+
+func (r authRepository) CountLogin(ctx context.Context, col, value string, amount *int64) (err error) {
+	return r.db.Model(&gormModel.RefreshToken{}).
+		Where(col+" = ?", value).
+		Where("is_active IS TRUE").
+		Count(amount).Error
+}

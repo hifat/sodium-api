@@ -23,6 +23,7 @@ type AuthRepository interface {
 	Logout(ctx context.Context, refreshTokenID uuid.UUID) (err error)
 	CreateRefreshToken(ctx context.Context, req RequestCreateRefreshToken) (res *ResponseCreateRefreshToken, err error)
 	GetRefreshTokenByID(ctx context.Context, refreshTokenID uuid.UUID, res *ResponseRefreshTokenClaim) (err error)
+	CountLogin(ctx context.Context, col, value string, amount *int64) (err error)
 }
 
 type RequestRegister struct {

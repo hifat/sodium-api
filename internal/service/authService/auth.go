@@ -6,6 +6,7 @@ import (
 	"log"
 	"net/http"
 	"os"
+	"strconv"
 	"time"
 
 	"github.com/google/uuid"
@@ -65,6 +66,25 @@ func (u authService) Login(ctx context.Context, req authDomain.RequestLogin, res
 		}
 
 		return err
+	}
+
+	var amountDevice int64
+	err = u.authRepo.CountLogin(ctx, "user_id", user.ID.String(), &amountDevice)
+	if err != nil {
+		return err
+	}
+
+	maxDevice, err := strconv.Atoi(os.Getenv(constants.LIMIT_AUTH_DEVICE))
+	if err != nil {
+		return err
+	}
+
+	if amountDevice >= int64(maxDevice) {
+		return ernos.Ernos{
+			Status:  http.StatusForbidden,
+			Message: ernos.M.MAX_DEVICES_LOGIN,
+			Code:    ernos.C.MAX_DEVICES_LOGIN,
+		}
 	}
 
 	newRefreshToken := authDomain.RequestCreateRefreshToken{
