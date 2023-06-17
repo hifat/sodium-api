@@ -25,5 +25,5 @@ var M = m{
 	NOT_FOUND_BEARER:        "could not find bearer token in authorization header",
 	BROKEN_TOKEN:            "the token is broken",
 	TOO_MANY_REQUEST:        "too many request",
-	MAX_DEVICES_LOGIN:       "maximum devices limit reached. Please log out from one of your other devices before attempting to log in again",
+	MAX_DEVICES_LOGIN:       "maximum devices limit reached. please log out from one of your other devices before attempting to log in again",
 }
