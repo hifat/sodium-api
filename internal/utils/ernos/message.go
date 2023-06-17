@@ -11,6 +11,8 @@ type m struct {
 	NO_AUTHORIZATION_HEADER string
 	NOT_FOUND_BEARER        string
 	BROKEN_TOKEN            string
+	TOO_MANY_REQUEST        string
+	MAX_DEVICES_LOGIN       string
 }
 
 var M = m{
@@ -22,4 +24,6 @@ var M = m{
 	NO_AUTHORIZATION_HEADER: "no authorization header provided",
 	NOT_FOUND_BEARER:        "could not find bearer token in authorization header",
 	BROKEN_TOKEN:            "the token is broken",
+	TOO_MANY_REQUEST:        "too many request",
+	MAX_DEVICES_LOGIN:       "maximum devices limit reached. Please log out from one of your other devices before attempting to log in again",
 }
