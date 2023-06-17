@@ -57,6 +57,7 @@ func (h AuthHandler) Register(ctx *gin.Context) {
 // @Produce		json
 // @Success		200 {object} authDomain.ResponseRefreshToken
 // @Success		401 {object} response.ErrorResponse "Username or password is incorect"
+// @Success		403 {object} response.ErrorResponse "Maximum devices limit reached"
 // @Success		422 {object} response.ErrorResponse "Form validation error"
 // @Success		500 {object} response.ErrorResponse "Internal server error"
 // @Router		/auth/login [post]
