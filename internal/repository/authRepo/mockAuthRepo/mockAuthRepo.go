@@ -116,6 +116,20 @@ func (m *MockAuthRepository) EXPECT() *MockAuthRepositoryMockRecorder {
 	return m.recorder
 }
 
+// CountLogin mocks base method.
+func (m *MockAuthRepository) CountLogin(ctx context.Context, col, value string, amount *int64) error {
+	m.ctrl.T.Helper()
+	ret := m.ctrl.Call(m, "CountLogin", ctx, col, value, amount)
+	ret0, _ := ret[0].(error)
+	return ret0
+}
+
+// CountLogin indicates an expected call of CountLogin.
+func (mr *MockAuthRepositoryMockRecorder) CountLogin(ctx, col, value, amount interface{}) *gomock.Call {
+	mr.mock.ctrl.T.Helper()
+	return mr.mock.ctrl.RecordCallWithMethodType(mr.mock, "CountLogin", reflect.TypeOf((*MockAuthRepository)(nil).CountLogin), ctx, col, value, amount)
+}
+
 // CreateRefreshToken mocks base method.
 func (m *MockAuthRepository) CreateRefreshToken(ctx context.Context, req authDomain.RequestCreateRefreshToken) (*authDomain.ResponseCreateRefreshToken, error) {
 	m.ctrl.T.Helper()

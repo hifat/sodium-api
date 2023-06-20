@@ -76,7 +76,7 @@ func (u *testUserRepoSuite) TestUserRepo_CheckExists() {
 		u.Require().True(exists)
 	})
 
-	u.Run("failed - col is not in columns", func() {
+	u.Run("failed - invalid column", func() {
 		ctx := context.Background()
 
 		exists, err := u.userRepo.CheckExists(ctx, "no_col", "sodium")
