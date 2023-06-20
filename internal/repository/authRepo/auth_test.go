@@ -8,6 +8,7 @@ import (
 	"github.com/DATA-DOG/go-sqlmock"
 	"github.com/hifat/sodium-api/internal/domain/authDomain"
 	"github.com/hifat/sodium-api/internal/repository/authRepo"
+	"github.com/hifat/sodium-api/internal/utils"
 	"github.com/hifat/sodium-api/internal/utils/utime"
 	"github.com/stretchr/testify/suite"
 	"gorm.io/driver/postgres"
@@ -64,10 +65,12 @@ func (s *testAuthRepoSuite) TearDownSuite() {
 func (u *testAuthRepoSuite) TestAuthRepo_Register() {
 	u.Run("success - register", func() {
 		ctx := context.Background()
+		password, err := utils.HashPassword("12345678")
+		u.Require().NoError(err)
 
 		req := authDomain.RequestRegister{
 			Username: "sodium",
-			Password: "12345678",
+			Password: password,
 			Name:     "Sodiumy",
 		}
 
@@ -88,11 +91,43 @@ func (u *testAuthRepoSuite) TestAuthRepo_Register() {
 			regexp.QuoteMeta(`SELECT "users"."username","users"."name" FROM "users" WHERE id = $1 AND "users"."deleted_at" IS NULL ORDER BY "users"."id" LIMIT 1`)).
 			WithArgs(sqlmock.AnyArg()).
 			WillReturnRows(sqlmock.NewRows([]string{"username", "name"}).
-				AddRow("sodium", "Sodiumy"))
+				AddRow(req.Username, req.Name))
 
 		res := authDomain.ResponseRegister{}
-		err := u.authRepo.Register(ctx, req, &res)
+		err = u.authRepo.Register(ctx, req, &res)
 		u.Require().NoError(err)
 		u.Require().NotEmpty(res)
+	})
+}
+
+func (u *testAuthRepoSuite) TestAuthRepo_Login() {
+	u.Run("success - login", func() {
+		ctx := context.Background()
+
+		hashedPassword, err := utils.HashPassword("12345678")
+		u.Require().NoError(err)
+
+		req := authDomain.RequestLogin{
+			Username: "sodium",
+			Password: "12345678",
+		}
+
+		var (
+			name = "Sodiumy"
+		)
+
+		u.mock.ExpectQuery(
+			regexp.QuoteMeta(`SELECT "id","username","password","name" FROM "users" WHERE username = $1 AND "users"."deleted_at" IS NULL ORDER BY "users"."id" LIMIT 1`)).
+			WithArgs(sqlmock.AnyArg()).
+			WillReturnRows(sqlmock.NewRows([]string{"username", "password", "name"}).
+				AddRow(req.Username, hashedPassword, name))
+
+		res := authDomain.ResponseRefreshTokenRepo{}
+		err = u.authRepo.Login(ctx, req, &res)
+		u.Require().NoError(err)
+		u.Require().NotEmpty(res)
+
+		u.Require().Equal(req.Username, res.Username)
+		u.Require().Equal(name, res.Name)
 	})
 }
