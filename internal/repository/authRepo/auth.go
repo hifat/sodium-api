@@ -52,18 +52,22 @@ func (r authRepository) Logout(ctx context.Context, refreshTokenID uuid.UUID) (e
 
 func (r authRepository) CreateRefreshToken(ctx context.Context, req authDomain.RequestCreateRefreshToken) (res *authDomain.ResponseCreateRefreshToken, err error) {
 	refreshToken := gormModel.RefreshToken{
-		ID:       req.ID,
-		Token:    req.Token,
-		Agent:    req.Agent,
-		ClientIP: req.ClientIP,
-		UserID:   req.UserID,
+		ID:        req.ID,
+		Token:     req.Token,
+		Agent:     req.Agent,
+		ClientIP:  req.ClientIP,
+		UserID:    req.UserID,
+		CreatedAt: utime.Now(),
+		UpdatedAt: utime.Now(),
 	}
 
-	return res, r.db.Create(&refreshToken).Scan(&res).Error
+	return res, r.db.
+		Create(&refreshToken).
+		Scan(&res).Error
 }
 
 func (r authRepository) GetRefreshTokenByID(ctx context.Context, refreshTokenID uuid.UUID, res *authDomain.ResponseRefreshTokenClaim) (err error) {
-	return r.db.Model(&gormModel.RefreshToken{}).
+	return r.db.Model(&gormModel.RefreshToken{}).Debug().
 		Joins("User").
 		Where("refresh_tokens.id = ?", refreshTokenID).
 		First(&res).Error
