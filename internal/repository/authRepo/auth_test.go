@@ -55,9 +55,9 @@ func (s *testAuthRepoSuite) TearDownTest() {
 	utime.UnFreeze()
 }
 
-// func (s *testAuthRepoSuite) AfterTest(_, _ string) {
-// 	s.Require().NoError(s.mock.ExpectationsWereMet())
-// }
+func (s *testAuthRepoSuite) AfterTest(_, _ string) {
+	s.Require().NoError(s.mock.ExpectationsWereMet())
+}
 
 func (s *testAuthRepoSuite) TearDownSuite() {
 	sql, err := s.db.DB()
@@ -211,7 +211,7 @@ func (s *testAuthRepoSuite) TestAuthRepo_CreateRefreshToken() {
 		s.mock.ExpectCommit()
 
 		s.mock.ExpectQuery(
-			regexp.QuoteMeta(`SELECT * FROM "refresh_tokens" WHERE "rt"."id" = $1`)).
+			regexp.QuoteMeta(`SELECT * FROM "refresh_tokens" WHERE "refresh_tokens"."id" = $1`)).
 			WithArgs(req.ID).
 			WillReturnRows(sqlmock.NewRows([]string{"token", "agent", "client_ip", "is_active", "user_id"}).
 				AddRow(

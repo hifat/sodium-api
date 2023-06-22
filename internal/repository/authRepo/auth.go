@@ -61,13 +61,12 @@ func (r authRepository) CreateRefreshToken(ctx context.Context, req authDomain.R
 		UpdatedAt: utime.Now(),
 	}
 
-	return res, r.db.
-		Create(&refreshToken).
+	return res, r.db.Create(&refreshToken).
 		Scan(&res).Error
 }
 
 func (r authRepository) GetRefreshTokenByID(ctx context.Context, refreshTokenID uuid.UUID, res *authDomain.ResponseRefreshTokenClaim) (err error) {
-	return r.db.Model(&gormModel.RefreshToken{}).Debug().
+	return r.db.Model(&gormModel.RefreshToken{}).
 		Joins("User").
 		Where("refresh_tokens.id = ?", refreshTokenID).
 		First(&res).Error
