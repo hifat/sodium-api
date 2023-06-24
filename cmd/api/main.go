@@ -26,23 +26,14 @@ func init() {
 	}
 }
 
-func main() {
-	/* --------------------------------- Init DB -------------------------------- */
-	handlerWire, cleanup := di.InitializeAPI()
-	defer cleanup()
-
-	/* ---------------------------- Validator config ---------------------------- */
-	validity.Register()
-
-	/* ------------------------------- Swag config ------------------------------ */
-
-	// programmatically set swagger info
+func swagInit() {
 	docs.SwaggerInfo.Title = "Sodium API"
 	docs.SwaggerInfo.Version = "1.0"
 	docs.SwaggerInfo.BasePath = "/api"
 	docs.SwaggerInfo.Schemes = []string{"http", "https"}
+}
 
-	/* --------------------------- Running API server --------------------------- */
+func configCors() cors.Config {
 	corsConfig := cors.DefaultConfig()
 	corsConfig.AllowAllOrigins = true
 	corsConfig.AllowHeaders = []string{
@@ -52,9 +43,21 @@ func main() {
 		"Authorization",
 	}
 
+	return corsConfig
+}
+
+func main() {
+	/* --------------------------------- Init DB -------------------------------- */
+	handlerWire, cleanup := di.InitializeAPI()
+	defer cleanup()
+
+	/* --------------------------- Running API server --------------------------- */
+	validity.Register()
+	swagInit()
+
 	router := gin.Default()
 
-	router.Use(cors.New(corsConfig))
+	router.Use(cors.New(configCors()))
 	router.Use(gin.Recovery())
 
 	router.GET("/swagger/*any", ginSwagger.WrapHandler(swaggerFiles.Handler))
