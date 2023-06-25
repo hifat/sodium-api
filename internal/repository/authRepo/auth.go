@@ -46,7 +46,7 @@ func (r authRepository) Login(ctx context.Context, req authDomain.RequestLogin, 
 }
 
 func (r authRepository) Logout(ctx context.Context, refreshTokenID uuid.UUID) (err error) {
-	return r.db.Where("id", refreshTokenID).
+	return r.db.Where("id = ?", refreshTokenID).
 		Delete(&gormModel.RefreshToken{}).Error
 }
 

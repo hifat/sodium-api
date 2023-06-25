@@ -165,7 +165,7 @@ func (s *testAuthRepoSuite) TestAuthRepo_Logout() {
 
 		s.mock.ExpectBegin()
 		s.mock.ExpectExec(
-			regexp.QuoteMeta(`DELETE FROM "refresh_tokens" WHERE "id" = $1`)).
+			regexp.QuoteMeta(`DELETE FROM "refresh_tokens" WHERE id = $1`)).
 			WithArgs(refreshTokenID).
 			WillReturnResult(sqlmock.NewResult(0, 1))
 		s.mock.ExpectCommit()
