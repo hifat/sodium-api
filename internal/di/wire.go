@@ -5,7 +5,6 @@ package di
 
 import (
 	"github.com/google/wire"
-	"github.com/hifat/sodium-api/internal/adapter"
 	"github.com/hifat/sodium-api/internal/handler"
 	"github.com/hifat/sodium-api/internal/handler/authHandler"
 	"github.com/hifat/sodium-api/internal/middleware"
@@ -17,7 +16,7 @@ import (
 )
 
 var AdapterSet = wire.NewSet(
-	adapter.AdapterSet,
+	NewAdapter,
 )
 
 var MiddlewareSet = wire.NewSet(
@@ -41,7 +40,7 @@ var HandlerSet = wire.NewSet(
 	handler.HandlerSet,
 )
 
-func InitializeAPI() (adapter.Adapter, func()) {
+func InitializeAPI() (Adapter, func()) {
 	wire.Build(AdapterSet, MiddlewareSet, RepoSet, ServiceSet, HandlerSet)
-	return adapter.Adapter{}, nil
+	return Adapter{}, nil
 }
