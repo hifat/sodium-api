@@ -1,12 +1,9 @@
-package adapter
+package di
 
 import (
-	"github.com/google/wire"
 	"github.com/hifat/sodium-api/internal/handler"
 	"github.com/hifat/sodium-api/internal/middleware"
 )
-
-var AdapterSet = wire.NewSet(NewAdapter)
 
 type Adapter struct {
 	Middleware middleware.Middleware

@@ -8,7 +8,6 @@ package di
 
 import (
 	"github.com/google/wire"
-	"github.com/hifat/sodium-api/internal/adapter"
 	"github.com/hifat/sodium-api/internal/handler"
 	"github.com/hifat/sodium-api/internal/handler/authHandler"
 	"github.com/hifat/sodium-api/internal/middleware"
@@ -21,7 +20,7 @@ import (
 
 // Injectors from wire.go:
 
-func InitializeAPI() (adapter.Adapter, func()) {
+func InitializeAPI() (Adapter, func()) {
 	db, cleanup := repository.NewGormDB()
 	authRepository := authRepo.NewAuthRepository(db)
 	authMiddlewareService := middlewareService.NewAuthMiddlewareService(authRepository)
@@ -31,15 +30,17 @@ func InitializeAPI() (adapter.Adapter, func()) {
 	authDomainAuthService := authService.NewAuthService(authRepository, userRepository)
 	authHandlerAuthHandler := authHandler.NewAuthHandler(authDomainAuthService)
 	handlerHandler := handler.NewHandler(authHandlerAuthHandler)
-	adapterAdapter := adapter.NewAdapter(middlewareMiddleware, handlerHandler)
-	return adapterAdapter, func() {
+	adapter := NewAdapter(middlewareMiddleware, handlerHandler)
+	return adapter, func() {
 		cleanup()
 	}
 }
 
 // wire.go:
 
-var AdapterSet = wire.NewSet(adapter.AdapterSet)
+var AdapterSet = wire.NewSet(
+	NewAdapter,
+)
 
 var MiddlewareSet = wire.NewSet(middleware.MiddlewareSet, middleware.AuthMiddlewareSet)
 
