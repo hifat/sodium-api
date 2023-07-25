@@ -20,6 +20,11 @@ make run
 make swag
 ```
 
+- Generate dependency injection
+```bash
+make wire
+```
+
 # Feature
 
 - [x] Auth
